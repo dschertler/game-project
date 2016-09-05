@@ -1,3 +1,4 @@
+//This is the Display Manager which renders the main display
 package renderEngine;
 
 import org.lwjgl.LWJGLException;
@@ -8,16 +9,16 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
 public class DisplayManager {
-	
+	//Display values. Change these to change the width, height, and FPS of the game
 	private static final int WIDTH = 1280;
 	private static final int HEIGHT = 720;
 	private static final int FPS_CAP = 120;
-
+	//This function createDisplay is responsible for creating the game display according to the version (version used 3.2)
 	public static void createDisplay(){		
 			ContextAttribs attribs = new ContextAttribs(3,2);
 			attribs.withForwardCompatible(true);
 			attribs.withProfileCore(true);
-			
+		//This loop attempts to display the game using the WIDTH and HEIGHT variables. Game title can also be changed here. Catches stack trace error.	
 		try{
 			Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));
 			Display.create(new PixelFormat(), attribs);
@@ -28,14 +29,14 @@ public class DisplayManager {
 		
 		GL11.glViewport(0, 0, WIDTH, HEIGHT);
 	}
-	
+	//This function updateDisplay will update the display at the given FPS interval by calling the update function.
 	public static void updateDisplay(){
 		
 		Display.sync(FPS_CAP);
 		Display.update();
 		
 	}
-	
+	//This function closeDisplay closes the display by calling the destroy function
 	public static void closeDisplay(){
 		
 		Display.destroy();
