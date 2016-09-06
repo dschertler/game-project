@@ -1,0 +1,13 @@
+#version 400 core
+//This is the vertexShader, which takes a vertex position, and assigns color values to it
+//Input Position
+in vec3 position;
+//Output Color
+out vec3 color;
+
+void main (void){
+	//Set the render position
+	gl_Position = vec4(position,1.0);
+	//Calculate color based on position
+	color = vec3(position.x+0.5,1.0,position.y+0.5);
+}

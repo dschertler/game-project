@@ -6,6 +6,7 @@ import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.RawModel;
 import renderEngine.Renderer;
+import shaders.StaticShader;
 //This is the MainGameLoop class, which handles running the actual game
 public class MainGameLoop {
 
@@ -16,6 +17,8 @@ public class MainGameLoop {
 		Loader loader = new Loader();
 		//Creates the renderer for rendering 3D models
 		Renderer renderer = new Renderer();
+		//Shader for main game loop
+		StaticShader shader = new StaticShader(null, null);
 		//Defines vertices, V1-V4
 		float[] vertices = {
 				//Top Left Vertex
@@ -41,11 +44,17 @@ public class MainGameLoop {
 		while(!Display.isCloseRequested()){
 			//Prepare to render
 			renderer.prepare();
+			//Start shading
+			shader.start();
 			//Render 3D model
 			renderer.render(model);
+			//Stop shading
+			shader.stop();
 			//Update display
 			DisplayManager.updateDisplay();
 		}
+		//Delete leftover shaders
+		shader.cleanUp();
 		//Delete all VAOs & VAOs
 		loader.cleanUp();
 		//Close the application
