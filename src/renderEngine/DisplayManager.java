@@ -1,4 +1,3 @@
-//This is the Display Manager which renders the main display
 package renderEngine;
 
 import org.lwjgl.LWJGLException;
@@ -7,7 +6,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
-
+//This is the Display Manager class which renders the main display
 public class DisplayManager {
 	//Display values. Change these to change the width, height, and FPS of the game
 	private static final int WIDTH = 1280;
