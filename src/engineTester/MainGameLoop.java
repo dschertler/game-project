@@ -16,19 +16,26 @@ public class MainGameLoop {
 		Loader loader = new Loader();
 		//Creates the renderer for rendering 3D models
 		Renderer renderer = new Renderer();
-		//Defines vertices, must be listed in counter clockwise order
+		//Defines vertices, V1-V4
 		float[] vertices = {
-				//Triangle's bottom left
-				-0.5f, 0.5f, 0f,
-				-0.5f, -0.5f, 0f,
-				0.5f, -0.5f, 0f,
-				//Triangle's bottom right
-				0.5f, -0.5f, 0f,
-				0.5f, 0.5f, 0f,
-				-0.5f, 0.5f, 0f
+				//Top Left Vertex
+				-0.5f, 0.5f, 0,
+				//Bottom Left Vertex
+				-0.5f, -0.5f, 0,
+				//Bottom Right Vertex
+				0.5f, -0.5f, 0,
+				//Top Right Vertex
+				0.5f, 0.5f, 0
+		};
+		//Defines the reference order of the vertexes
+		int[] indices = {
+				//Top Left Triangle
+				0,1,3,
+				//Bottom Right Triangle
+				3,1,2
 		};
 		//Load 3D model into RawModel type model
-		RawModel model = loader.loadToVAO(vertices);
+		RawModel model = loader.loadToVAO(vertices, indices);
 		
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){

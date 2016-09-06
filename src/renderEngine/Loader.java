@@ -1,6 +1,7 @@
 package renderEngine;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,17 +16,19 @@ public class Loader {
 	//Lists of VAOs and VBOs
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
-	//This is the loadToVAO method which takes the vertex data from a 3D model, and loads the information into a VAO
+	//This is the loadToVAO method which takes the vertex data from a 3D model, and the indices buffer, then loads the information into a VAO
 	//It will return a RawModel of vertex data
-	public RawModel loadToVAO(float[] positions){
+	public RawModel loadToVAO(float[] positions, int[] indices){
 		//Create new VAO
 		int vaoID = createVAO();
+		//Bind Indices buffer to new VAO
+		bindIndicesBuffer(indices);
 		//Store in first slot of VAO
 		storeDataInAttributeList(0,positions);
 		//Unbind VAO
 		unbindVAO();
-		//Return the raw model, with the length/3 to represent 3D space
-		return new RawModel(vaoID, positions.length/3);	
+		//Return the raw model, with the indices length
+		return new RawModel(vaoID, indices.length);	
 	}
 	//cleanUp function deletes all VAOs and VBOs in respective lists
 	public void cleanUp(){
@@ -72,6 +75,30 @@ public class Loader {
 	//unbindVAO unbinds the VAO
 	private void unbindVAO(){
 		GL30.glBindVertexArray(0);
+	}
+	//This function binds an indices array as a buffer
+	private void bindIndicesBuffer(int[] indices){
+		//Sets vboID to empty vboID
+		int vboID = GL15.glGenBuffers();
+		//Adds to vboID list
+		vbos.add(vboID);
+		//Binds vbo as element array buffer
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
+		//Create new buffer of indices
+		IntBuffer buffer = storeDataInIntBuffer(indices);
+		//Stores the buffer in the VBO
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+	}
+	//Stores the data array as an intBuffer array
+	private IntBuffer storeDataInIntBuffer(int[] data){
+		//Create a new Int Buffer
+		IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
+		//Put data from data array in buffer
+		buffer.put(data);
+		//Prepare to read
+		buffer.flip();
+		//Return the buffer
+		return buffer;
 	}
 	//Takes given data array, and stores it in a buffer of floats
 	private FloatBuffer storeDataInFloatBuffer(float[] data){
