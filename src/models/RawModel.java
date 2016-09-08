@@ -1,4 +1,4 @@
-package renderEngine;
+package models;
 //This is the RawModel class which represents 3D models
 public class RawModel {
 	//vaoID references the ID of the Vertex Array Object, and vertexCount indicates the # of vertices

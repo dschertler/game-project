@@ -3,9 +3,13 @@ package shaders;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 //This is the abstract Shader Program class which will provide basic support for all types of shader classes
 public abstract class ShaderProgram {
@@ -13,6 +17,8 @@ public abstract class ShaderProgram {
 	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
+	
+	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	//This is the clas constructor. It takes a string indicating the vertex file, and another indicating the fragment file
 	public ShaderProgram(String vertexFile, String fragmentFile){
 		//Loads the vertex shader from vertex file
@@ -31,6 +37,14 @@ public abstract class ShaderProgram {
 		GL20.glLinkProgram(programID);
 		//Double check everything's good
 		GL20.glValidateProgram(programID);
+		getAllUniformLocations();
+	}
+	//Used for locating all uniform variables
+	protected abstract void getAllUniformLocations();
+	//Used for locating a single uniform variable based on uniform name
+	protected int getUniformLocation(String uniformName){
+		//Return the location of a uniform variable based on the program name, and uniform ID
+		return GL20.glGetUniformLocation(programID, uniformName);
 	}
 	//Used for starting the shader program
 	public void start(){
@@ -58,6 +72,28 @@ public abstract class ShaderProgram {
 	//bindAttribute takes an int specifying the attribute location in the VAO, and a variable name from the shader program to bind
 	protected void bindAttribute(int attribute, String variableName){
 		GL20.glBindAttribLocation(programID, attribute, variableName);	
+	}
+	//Used for loading a float value into a uniform variable
+	protected void loadFloat(int location, float value){
+		GL20.glUniform1f(location, value);
+	}
+	//Used for loading a vector into a uniform variable
+	protected void loadVector(int location, Vector3f vector){
+		GL20.glUniform3f(location, vector.x, vector.y, vector.z);
+	}
+	//Used to load a boolean to a uniform variable
+	protected void loadBoolean(int location, boolean value){
+		float toLoad = 0;
+		if(value){
+			toLoad = 1;
+		}
+		GL20.glUniform1f(location, toLoad);
+	}
+	//Used to load a matrix to a uniform variable
+	protected void loadMatrix(int location, Matrix4f matrix){
+		matrix.store(matrixBuffer);
+		matrixBuffer.flip();
+		GL20.glUniformMatrix4(location, false, matrixBuffer);
 	}
 	//This is the loadShader function. It takes the file of something to be shaded, and a type indicating if it is a vertex or a fragment
 	private static int loadShader(String file, int type){

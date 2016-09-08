@@ -14,9 +14,9 @@ public class DisplayManager {
 	private static final int FPS_CAP = 120;
 	//This function createDisplay is responsible for creating the game display according to the version (version used 3.2)
 	public static void createDisplay(){		
-			ContextAttribs attribs = new ContextAttribs(3,2);
-			attribs.withForwardCompatible(true);
-			attribs.withProfileCore(true);
+			ContextAttribs attribs = new ContextAttribs(3,2)
+			.withForwardCompatible(true)
+			.withProfileCore(true);
 		//This loop attempts to display the game using the WIDTH and HEIGHT variables. Game title can also be changed here. Catches stack trace error.	
 		try{
 			Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));

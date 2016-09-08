@@ -2,11 +2,13 @@ package engineTester;
 
 import org.lwjgl.opengl.Display;
 
+import models.RawModel;
+import models.TexturedModel;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
-import renderEngine.RawModel;
 import renderEngine.Renderer;
 import shaders.StaticShader;
+import textures.ModelTexture;
 //This is the MainGameLoop class, which handles running the actual game
 public class MainGameLoop {
 
@@ -37,17 +39,31 @@ public class MainGameLoop {
 				//Bottom Right Triangle
 				3,1,2
 		};
+		//Defines the reference order for the texture coords
+		float[] textureCoords = {
+				//Top Left
+				0,0,
+				//Bottom Left
+				0,1,
+				//Bottom Right
+				1,1,
+				//Top Right
+				1,0
+		};
 		//Load 3D model into RawModel type model
-		RawModel model = loader.loadToVAO(vertices, indices);
-		
+		RawModel model = loader.loadToVAO(vertices, textureCoords, indices);
+		//Load texture defined by name from res into ModelTexture as a texture
+		ModelTexture texture = new ModelTexture(loader.loadTexture("haruhi"));
+		//Combine the model and the texture just loaded to form a textured model
+		TexturedModel texturedModel = new TexturedModel(model, texture);
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
 			//Prepare to render
 			renderer.prepare();
 			//Start shading
 			shader.start();
-			//Render 3D model
-			renderer.render(model);
+			//Render 3D textured model
+			renderer.render(texturedModel);
 			//Stop shading
 			shader.stop();
 			//Update display

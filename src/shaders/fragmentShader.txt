@@ -1,11 +1,13 @@
 #version 400 core
 //This is the fragment shader which takes the color values of several vertexes and blends accordingly
-//Input Vector Color
-in vec3 color;
+//Input texture coordinates
+in vec2 pass_textureCoords;
 //Output Colored Pixels
 out vec4 out_Color;
 
+uniform sampler2D textureSampler;
+
 void main(void){
-	//Output blended vector colors
-	out_Color = vec4(color,1.0);
+	//Output the texture mapped to the proper coordinates
+	out_Color = texture(textureSampler, pass_textureCoords);
 }

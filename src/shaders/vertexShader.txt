@@ -2,12 +2,16 @@
 //This is the vertexShader, which takes a vertex position, and assigns color values to it
 //Input Position
 in vec3 position;
-//Output Color
-out vec3 color;
+//Input Texture Coordinates
+in vec2 textureCoords;
+//Output Texture Coords to fragment shader
+out vec2 pass_textureCoords;
+//The uniform matrix which handles vertex transformations
+uniform mat4 transformationMatrix;
 
 void main (void){
 	//Set the render position
 	gl_Position = vec4(position,1.0);
-	//Calculate color based on position
-	color = vec3(position.x+0.5,1.0,position.y+0.5);
+	//Calculate texture based on position and coords
+	pass_textureCoords = textureCoords;
 }
