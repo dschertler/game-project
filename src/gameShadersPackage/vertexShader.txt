@@ -1,11 +1,11 @@
 #version 400 core
-//This is the vertexShader, which takes a vertex position, and assigns color values to it
-//Input Position
-in vec3 position;
+//This is the vertexShader, which takes a vertex placement, and assigns color values to it
+//Input placement
+in vec3 placementVector;
 //Input Texture Coordinates
-in vec2 textureCoords;
+in vec2 placementTexture;
 //Output Texture Coords to fragment shader
-out vec2 pass_textureCoords;
+out vec2 pass_placementTexture;
 //The uniform matrix which handles vertex transformations
 uniform mat4 transformationMatrix;
 //The uniform matrix that handles projections to give the illusion of 3 dimensional space
@@ -15,7 +15,7 @@ uniform mat4 viewMatrix;
 
 void main (void){
 	//Set the render position given its matrix transformation, view matrix, and projection matrix
-	gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(position,1.0);
-	//Calculate texture based on position and coords
-	pass_textureCoords = textureCoords;
+	gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(placementVector,1.0);
+	//Calculate texture based on placement and coords
+	pass_placementTexture = placementTexture;
 }
