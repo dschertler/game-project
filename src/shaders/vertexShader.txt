@@ -8,10 +8,14 @@ in vec2 textureCoords;
 out vec2 pass_textureCoords;
 //The uniform matrix which handles vertex transformations
 uniform mat4 transformationMatrix;
+//The uniform matrix that handles projections to give the illusion of 3 dimensional space
+uniform mat4 projectionMatrix;
+//The uniform matrix that handles the camera view to give the illusion of controlled movement
+uniform mat4 viewMatrix;
 
 void main (void){
-	//Set the render position
-	gl_Position = vec4(position,1.0);
+	//Set the render position given its matrix transformation, view matrix, and projection matrix
+	gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(position,1.0);
 	//Calculate texture based on position and coords
 	pass_textureCoords = textureCoords;
 }

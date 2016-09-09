@@ -1,7 +1,10 @@
 package engineTester;
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector3f;
 
+import entities.Camera;
+import entities.Entity;
 import models.RawModel;
 import models.TexturedModel;
 import renderEngine.DisplayManager;
@@ -17,53 +20,110 @@ public class MainGameLoop {
 		DisplayManager.createDisplay();
 		//Creates the loader for loading 3D models
 		Loader loader = new Loader();
-		//Creates the renderer for rendering 3D models
-		Renderer renderer = new Renderer();
 		//Shader for main game loop
 		StaticShader shader = new StaticShader(null, null);
-		//Defines vertices, V1-V4
-		float[] vertices = {
-				//Top Left Vertex
-				-0.5f, 0.5f, 0,
-				//Bottom Left Vertex
-				-0.5f, -0.5f, 0,
-				//Bottom Right Vertex
-				0.5f, -0.5f, 0,
-				//Top Right Vertex
-				0.5f, 0.5f, 0
+		//Creates the renderer for rendering 3D models
+		Renderer renderer = new Renderer(shader);
+		//Defines vertices for cube
+		float[] vertices = {			
+				-0.5f,0.5f,-0.5f,	
+				-0.5f,-0.5f,-0.5f,	
+				0.5f,-0.5f,-0.5f,	
+				0.5f,0.5f,-0.5f,		
+				
+				-0.5f,0.5f,0.5f,	
+				-0.5f,-0.5f,0.5f,	
+				0.5f,-0.5f,0.5f,	
+				0.5f,0.5f,0.5f,
+				
+				0.5f,0.5f,-0.5f,	
+				0.5f,-0.5f,-0.5f,	
+				0.5f,-0.5f,0.5f,	
+				0.5f,0.5f,0.5f,
+				
+				-0.5f,0.5f,-0.5f,	
+				-0.5f,-0.5f,-0.5f,	
+				-0.5f,-0.5f,0.5f,	
+				-0.5f,0.5f,0.5f,
+				
+				-0.5f,0.5f,0.5f,
+				-0.5f,0.5f,-0.5f,
+				0.5f,0.5f,-0.5f,
+				0.5f,0.5f,0.5f,
+				
+				-0.5f,-0.5f,0.5f,
+				-0.5f,-0.5f,-0.5f,
+				0.5f,-0.5f,-0.5f,
+				0.5f,-0.5f,0.5f
+				
 		};
 		//Defines the reference order of the vertexes
 		int[] indices = {
-				//Top Left Triangle
-				0,1,3,
-				//Bottom Right Triangle
-				3,1,2
+				0,1,3,	
+				3,1,2,	
+				4,5,7,
+				7,5,6,
+				8,9,11,
+				11,9,10,
+				12,13,15,
+				15,13,14,	
+				16,17,19,
+				19,17,18,
+				20,21,23,
+				23,21,22
+
 		};
 		//Defines the reference order for the texture coords
-		float[] textureCoords = {
-				//Top Left
+		float[] textureCoords = {			
 				0,0,
-				//Bottom Left
 				0,1,
-				//Bottom Right
 				1,1,
-				//Top Right
-				1,0
+				1,0,			
+				0,0,
+				0,1,
+				1,1,
+				1,0,			
+				0,0,
+				0,1,
+				1,1,
+				1,0,
+				0,0,
+				0,1,
+				1,1,
+				1,0,
+				0,0,
+				0,1,
+				1,1,
+				1,0,
+				0,0,
+				0,1,
+				1,1,
+				1,0		
 		};
 		//Load 3D model into RawModel type model
 		RawModel model = loader.loadToVAO(vertices, textureCoords, indices);
 		//Load texture defined by name from res into ModelTexture as a texture
-		ModelTexture texture = new ModelTexture(loader.loadTexture("haruhi"));
-		//Combine the model and the texture just loaded to form a textured model
-		TexturedModel texturedModel = new TexturedModel(model, texture);
+		ModelTexture texture = new ModelTexture(loader.loadTexture("meow"));
+		//Combine the model and the texture just loaded to form a static model
+		TexturedModel staticModel = new TexturedModel(model, texture);
+		//Load the new static model at the vector coordinates listed
+		Entity entity = new Entity(staticModel, new Vector3f(0, 0, 0), 0, 0, 0, 1);
+		//Load the camera to provide player view
+		Camera camera = new Camera();
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
+			entity.increasePosition(0, 0.0f, -0.001f);
+			entity.increaseRotation(0, 0.3f, 0.3f);
+			entity.increaseScale(0.00f);
+			camera.move();
 			//Prepare to render
 			renderer.prepare();
 			//Start shading
 			shader.start();
-			//Render 3D textured model
-			renderer.render(texturedModel);
+			//Loads the camera to give the illusion of player movement
+			shader.loadViewMatrix(camera);
+			//Render 3D textured model entity
+			renderer.render(entity, shader);
 			//Stop shading
 			shader.stop();
 			//Update display
