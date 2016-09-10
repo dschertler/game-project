@@ -11,5 +11,4 @@ public class GameModelTexture {
 	public int getID(){
 		return this.textureID;
 	}
-
 }

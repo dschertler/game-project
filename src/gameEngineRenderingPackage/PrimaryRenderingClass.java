@@ -39,7 +39,7 @@ public class PrimaryRenderingClass {
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		//Bind the texture to the object according to its texture ID
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
-		//Render the model as triangles, based on start point 0, and VertexCount many objects
+		//Render the model as triangles, based on start point 0, and VertexAmount many objects
 		GL11.glDrawElements(GL11.GL_TRIANGLES, untexturedModel.getVertexAmount(), GL11.GL_UNSIGNED_INT, 0);
 		//Disable the vertex position attribute from VAO
 		GL20.glDisableVertexAttribArray(0);

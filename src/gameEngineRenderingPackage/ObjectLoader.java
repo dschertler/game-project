@@ -24,8 +24,8 @@ public class ObjectLoader {
 	private List<Integer> textureList = new ArrayList<Integer>();
 	private List<Integer> vertexArrayObjectList = new ArrayList<Integer>();
 	private List<Integer> vertexBufferObjectList = new ArrayList<Integer>();
-	//This is the loadToVAO method which takes the vertex data from a 3D model, and the indices buffer, then loads the information into a VAO
-	//It will return a RawModel of vertex data
+	//This is the loadIntoVertexArrayObject method which takes the vertex data from a 3D model, and the indices buffer, then loads the information into a VAO
+	//It will return an UntexturedModel of vertex data
 	public UntexturedModel loadIntoVertexArrayObject(float[] vertexPositions, float[] coordinatesOfTexture, int[] indexOrder){
 		//Create new VAO
 		int vertexArrayObjectReferenceID = initializeVertexArrayObject();
@@ -33,7 +33,7 @@ public class ObjectLoader {
 		bindIndicesBuffer(indexOrder);
 		//Store model in first slot of VAO, as a 3D object
 		addDataToAttributeList(0, 3, vertexPositions);
-		//Store textureCoords in second slot of VAO, as a 2D object
+		//Store texture coordinates in second slot of VAO, as a 2D object
 		addDataToAttributeList(1, 2, coordinatesOfTexture);
 		//Unbind VAO
 		unbindVertexArrayObject();
@@ -54,7 +54,7 @@ public class ObjectLoader {
 		} catch (IOException e){
 			e.printStackTrace();
 		}
-		//Assign a texture ID to newly loaded texture
+		//Assign a texture reference ID to newly loaded texture
 		int textureReferenceID = texture.getTextureID();
 		//Add the new texture ID to the textureList array
 		textureList.add(textureReferenceID);
@@ -77,7 +77,7 @@ public class ObjectLoader {
 		}
 		
 	}
-	//The createVAO method returns an ID of a newly created VAO
+	//The initializeVertexArrayObject method returns an ID of a newly created VAO
 	private int initializeVertexArrayObject(){
 		//Creates an empty VAO and returns its ID
 		int vertexArrayObjectReferenceID = GL30.glGenVertexArrays();
@@ -141,8 +141,9 @@ public class ObjectLoader {
 		//Stores the buffer in the VBO
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 	}
-	//unbindVAO unbinds the VAO
+	//unbindVertexArrayObject unbinds the VAO
 	private void unbindVertexArrayObject(){
 		GL30.glBindVertexArray(0);
 	}
+
 }
