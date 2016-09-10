@@ -1,16 +1,1 @@
-/engineTester/
-/renderEngine/
-/shaders/
-/textures/
-/models/
-/tools/
-/entities/
-/basicEngine/
-/gameEntities/
-/gameModelPackage/
-/basicEnginePackage/
-/gameEntitiesPackage/
 /gameEngineRenderingPackage/
-/gameShadersPackage/
-/gameTexturesPackage/
-/basicGameEngineToolsPackage/

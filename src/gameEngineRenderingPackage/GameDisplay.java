@@ -9,8 +9,8 @@ import org.lwjgl.opengl.PixelFormat;
 //This is the GameDisplay class which renders the game display
 public class GameDisplay {
 	//Display values. Change these to change the width, height, and FPS of the game
-	private static final int gameDisplayWidth = 1280;
-	private static final int gameDisplayHeight = 720;
+	private static final int gameDisplayWidth = 1600;
+	private static final int gameDisplayHeight = 800;
 	private static final int maximumFramesPerSecond = 120;
 	//This function createDisplay is responsible for creating the game display according to the version (version used 3.2)
 	public static void displayMake(){		
