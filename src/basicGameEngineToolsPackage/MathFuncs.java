@@ -8,7 +8,7 @@ import gameEntitiesPackage.GameView;
 public class MathFuncs {
 	//This createViewMatrix function is used to create the matrix which adds the illusion of an in game camera
 	public static Matrix4f initializeGameViewMatrix(GameView gameView){
-		//Create the matrix
+		//Create the gameViewMatrix
 		Matrix4f gameViewMatrix = new Matrix4f();
 		//Set it as the identity matrix
 		gameViewMatrix.setIdentity();
@@ -16,7 +16,7 @@ public class MathFuncs {
 		Matrix4f.rotate((float) Math.toRadians(gameView.getGameViewPitch()), new Vector3f(1, 0, 0), gameViewMatrix, gameViewMatrix);
 		//Initialize camera yaw
 		Matrix4f.rotate((float) Math.toRadians(gameView.getGameViewYaw()), new Vector3f(0, 1, 0), gameViewMatrix, gameViewMatrix);
-		//Initialize cameral roll
+		//Initialize camera roll
 		Matrix4f.rotate((float) Math.toRadians(gameView.getGameViewRoll()), new Vector3f(0, 0, 1), gameViewMatrix, gameViewMatrix);
 		//A vertex for the movement of the camera
 		Vector3f cameraPos = gameView.getGameViewPosition();

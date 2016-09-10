@@ -25,15 +25,15 @@ public abstract class AbstractShaderManager {
 		vertexShaderReferenceID = loadShaderToUniformVariable(fileForVertex, GL20.GL_VERTEX_SHADER);
 		//Loads fragment shader from fragment file
 		fragmentShaderReferenceID = loadShaderToUniformVariable(fileForFragment, GL20.GL_FRAGMENT_SHADER);
-		//The programID links the vertexShader, and fragmentShader together
+		//The programReferenceID links the vertexShader, and fragmentShader together
 		programReferenceID = GL20.glCreateProgram();
-		//Attach vertexShader to programID
+		//Attach vertexShader to programReferenceID
 		GL20.glAttachShader(programReferenceID, vertexShaderReferenceID);
-		//Attach fragmentShader to programID
+		//Attach fragmentShader to programReferenceID
 		GL20.glAttachShader(programReferenceID, fragmentShaderReferenceID);
 		//Bind all attributes
 		bindShaderToAttribute();
-		//Link the vertex and fragment gameShadersPackage together in programID
+		//Link the vertex and fragment gameShadersPackage together in programReferenceID
 		GL20.glLinkProgram(programReferenceID);
 		//Double check everything's good
 		GL20.glValidateProgram(programReferenceID);
@@ -54,9 +54,9 @@ public abstract class AbstractShaderManager {
 		//Return the location of a uniform variable based on the program name, and uniform ID
 		return GL20.glGetUniformLocation(programReferenceID, nameOfUniformVariable);
 	}
-	//The bindAtributes function, will link the inputs of a shader, to the attributes of a VAO
+	//The bindShaderToAttribute function, will link the inputs of a shader, to the attributes of a VAO
 	protected abstract void bindShaderToAttribute();
-	//bindAttribute takes an int specifying the attribute location in the VAO, and a variable name from the shader program to bind
+	//bindShadertoAttribute takes an int specifying the attribute location in the VAO, and a variable name from the shader program to bind
 	protected void bindShaderToAttribute(int attribute, String nameOfVariable){
 		GL20.glBindAttribLocation(programReferenceID, attribute, nameOfVariable);	
 	}
@@ -82,7 +82,7 @@ public abstract class AbstractShaderManager {
 		matrixFloatBuffer.flip();
 		GL20.glUniformMatrix4(location, false, matrixFloatBuffer);
 	}
-	//This is the loadShader function. It takes the file of something to be shaded, and a type indicating if it is a vertex or a fragment
+	//This is the loadShaderToUniformVariable function. It takes the file of something to be shaded, and a type indicating if it is a vertex or a fragment
 	private static int loadShaderToUniformVariable(String file, int type){
 		//Create a builder for strings
 		StringBuilder shaderSource = new StringBuilder();

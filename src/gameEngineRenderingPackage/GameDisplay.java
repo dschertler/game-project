@@ -12,7 +12,7 @@ public class GameDisplay {
 	private static final int gameDisplayWidth = 1600;
 	private static final int gameDisplayHeight = 800;
 	private static final int maximumFramesPerSecond = 120;
-	//This function createDisplay is responsible for creating the game display according to the version (version used 3.2)
+	//This function displayMake is responsible for creating the game display according to the version (version used 3.2)
 	public static void displayMake(){		
 			ContextAttribs attribs = new ContextAttribs(3,2)
 			.withForwardCompatible(true)
@@ -28,13 +28,13 @@ public class GameDisplay {
 		
 		GL11.glViewport(0, 0, gameDisplayWidth, gameDisplayHeight);
 	}
-	//This function updateDisplay will update the display at the given FPS interval by calling the update function.
+	//This function displayRefresh will update the display at the given FPS interval by calling the update function.
 	public static void displayRefresh(){
 		Display.sync(maximumFramesPerSecond);
 		Display.update();
 		
 	}
-	//This function closeDisplay closes the display by calling the destroy function
+	//This function displayClose closes the display by calling the destroy function
 	public static void displayClose(){	
 		Display.destroy();	
 	}
