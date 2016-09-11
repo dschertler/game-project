@@ -32,7 +32,10 @@ public class BasicGame {
 		PrimaryRenderingClass modelRenderer = new PrimaryRenderingClass(modelShader);
 		
 		int i = 0;
+		int g = 0;
+		int k = 0;
 		GameEntity[] entityList = new GameEntity[3];
+		GameEntity[] secondaryEntityList = new GameEntity[9];
 		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, 0, 0, 0, 1);
 		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, 0, 0, 0, 0, 1);
 		entityList[2] = makeGameEntity(modelLoader, "meow", 0, 0, 0, 0, 0, 0, 1);
@@ -49,6 +52,11 @@ public class BasicGame {
 			            	i = i+1;
 			            	if(i == entityList.length) i = 0;
 			            	break;
+			            case Keyboard.KEY_G:
+			            	secondaryEntityList[g] = makeGameEntity(modelLoader, "haruhi", 0, 0, -100, 0, 0, 0, 0.5f);
+			            	g = g+1;
+			            	if(g == secondaryEntityList.length) g = 0;
+			            	break;
 			            default : break;
 			        }
 			    }
@@ -56,6 +64,13 @@ public class BasicGame {
 			currentEntity.moveEntityPosition(0, 0.0f, -0.1f);
 			currentEntity.changeEntityRotation(0, 0.3f, 0.3f);
 			currentEntity.changeEntityScale(0.00f);
+			while(k < g){
+				secondaryEntityList[k].moveEntityPosition(.01f, 0.01f, -0.1f);
+				secondaryEntityList[k].changeEntityRotation(0, 0.3f, 0.3f);
+				secondaryEntityList[k].changeEntityScale(0.00f);
+				k = k+1;
+			}
+			k = 0;
 			gameView.moveGameView();
 			//Prepare to render
 			modelRenderer.beforeRender();
@@ -65,6 +80,11 @@ public class BasicGame {
 			modelShader.loadViewMatrix(gameView);
 			//Render 3D textured model entity
 			modelRenderer.renderEntity(currentEntity, modelShader);
+			while(k < g){
+				modelRenderer.renderEntity(secondaryEntityList[k], modelShader);
+				k = k+1;
+			}
+			k = 0;
 			//Stop shading
 			modelShader.endShading();
 			//Update display
