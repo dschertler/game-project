@@ -12,6 +12,8 @@ out vec2 pass_placementTexture;
 out vec3 normalSurface;
 //Output the object's vector pointing to the light source
 out vec3 lightSourceVector;
+//Output the vector to the camera
+out vec3 vectorTowardsCamera;
 //This uniform vector handles the light position
 uniform vec3 lPosition;
 //The uniform matrix which handles vertex transformations
@@ -32,4 +34,6 @@ void main (void){
 	normalSurface = (transformationMatrix * vec4(normalVector, 0.0)).xyz;
 	//Find the vertex's lightSourceVector (the one which points towards the light source)
 	lightSourceVector = lPosition - globalPosition.xyz;
+	//Find the vector which is pointing towards the camera
+	vectorTowardsCamera = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - globalPosition.xyz; 
 }

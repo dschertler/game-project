@@ -11,6 +11,7 @@ import basicGameEngineToolsPackage.MathFuncs;
 import gameEntitiesPackage.GameEntity;
 import gameModelPackage.UntexturedModel;
 import gameShadersPackage.StaticShader;
+import gameTexturesPackage.GameModelTexture;
 import gameModelPackage.TexturedModel;
 //This PrimaryRenderingClass class is responsible for rendering 3D models stored in the VAO
 public class PrimaryRenderingClass {
@@ -35,6 +36,10 @@ public class PrimaryRenderingClass {
 		GL20.glEnableVertexAttribArray(2);
 		//Transform the entity to comply to proper position, rotation, and scale
 		Matrix4f transformationMatrix = MathFuncs.initializeTransformingMatrix(gameEntity.getGameEntityPosition(), gameEntity.getGameEntityRotationX(), gameEntity.getGameEntityRotationY(), gameEntity.getGameEntityRotationZ(), gameEntity.getGameEntityScale());
+		//Load up the light properties
+		GameModelTexture texture = model.getTexture();
+		//Start light shading
+		shader.loadLightVariables(texture.getCameraProximityToShine(), texture.getShine());
 		//Load up the transformation matrix
 		shader.loadTransformationMatrix(transformationMatrix);
 		//Activate texturing using the uniform texture sampler
@@ -81,6 +86,9 @@ public class PrimaryRenderingClass {
 		GL11.glClearColor(1, 0, 0, 1);	
 	}
 	public PrimaryRenderingClass(StaticShader shader){
+		//Don't render triangles which aren't facing the gameView
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
 		//Create the projection matrix
 		initializeProjectionMatrix();
 		//Start the shader

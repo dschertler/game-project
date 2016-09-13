@@ -14,6 +14,8 @@ public class StaticShader extends AbstractShaderManager{
 	
 	private int location_lPosition;
 	private int location_lColor;
+	private int location_shine;
+	private int location_cameraProximityToShine;
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
@@ -39,6 +41,10 @@ public class StaticShader extends AbstractShaderManager{
 		location_lPosition = super.findSingleUniformVariable("lPosition");
 		//Stores the information of the light's color
 		location_lColor = super.findSingleUniformVariable("lColor");
+		//Stores the proximity of the camera to the shine vector
+		location_cameraProximityToShine = super.findSingleUniformVariable("cameraProximityToShine");
+		//Stores the strength of an object's shine
+		location_shine = super.findSingleUniformVariable("shine");
 		//Stores the location of the transformation matrix
 		location_transformationMatrix = super.findSingleUniformVariable("transformationMatrix");
 		//Stores the location of the projection matrix
@@ -59,6 +65,11 @@ public class StaticShader extends AbstractShaderManager{
 	public void loadViewMatrix(GameView gameView){
 		Matrix4f viewMatrix = MathFuncs.initializeGameViewMatrix(gameView);
 		super.loadMatrixToUniformVariable(location_viewMatrix, viewMatrix);
+	}
+	//Loads the information of the camera's proximity to shine vector, and the strength of the shine to the uniform variable
+	public void loadLightVariables(float cameraProximityToShine, float shine){
+		super.loadFloatToUniformVariable(location_cameraProximityToShine, cameraProximityToShine);
+		super.loadFloatToUniformVariable(location_shine, shine);
 	}
 	//Load the information of the projection matrix to the uniform variable
 	public void loadProjectionMatrix(Matrix4f projection){

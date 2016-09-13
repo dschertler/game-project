@@ -37,9 +37,9 @@ public class BasicGame {
 		int k = 0;
 		GameEntity[] entityList = new GameEntity[3];
 		GameEntity[] secondaryEntityList = new GameEntity[9];
-		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, 0, 0, 0, 1);
-		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, 0, 0, 0, 0, 1);
-		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, 0, 0, 0, 0, 1);
+		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, 0, 0, 0, 1, 10, 1);
+		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, 0, 0, 0, 0, 1, 10, 1);
+		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, 0, 0, 0, 0, 1, 10, 1);
 		GameEntity currentEntity = entityList[0];
 		//Creates the GameView for player vision
 		GameView gameView = new GameView();
@@ -56,7 +56,7 @@ public class BasicGame {
 			            	if(i == entityList.length) i = 0;
 			            	break;
 			            case Keyboard.KEY_G:
-			            	secondaryEntityList[g] = makeGameEntity(modelLoader, "haruhi", 0, 0, -100, 0, 0, 0, 0.5f);
+			            	secondaryEntityList[g] = makeGameEntity(modelLoader, "haruhi", 0, 0, -100, 0, 0, 0, 0.5f, 10, 1);
 			            	g = g+1;
 			            	if(g == secondaryEntityList.length) g = 0;
 			            	break;
@@ -102,13 +102,19 @@ public class BasicGame {
 		//Close the application
 		GameDisplay.displayClose();
 	}
-	public static GameEntity makeGameEntity(ObjectLoader modelLoader, String fileName, float xpos, float ypos, float zpos, float xrot, float yrot, float zrot, float scale){
+	public static GameEntity makeGameEntity(ObjectLoader modelLoader, String fileName, float xpos, float ypos, float zpos, float xrot, float yrot, float zrot, float scale, float cameraProximityToShine, float shine){
 		//Load 3D model into UntexturedModel type model
 		UntexturedModel untexturedModel = OBJ_FileHandler.loadObjModel("thing", modelLoader);
 		//Load texture defined by name from res into GameModelTexture as a texture
 		GameModelTexture textureForModel = new GameModelTexture(modelLoader.loadTexture(fileName));
 		//Combine the UntexturedModel and the GameModelTexture just loaded to form a TexturedModel
 		TexturedModel staticModel = new TexturedModel(untexturedModel, textureForModel);
+		//Add light properties to model
+		GameModelTexture texture = staticModel.getTexture();
+		//Set the proximity to camera
+		texture.setCameraProximityToShine(cameraProximityToShine);
+		//Set the strength of the shine
+		texture.setShine(shine);
 		//Creates a GameEntity based on TexturedModel loaded at coordinates provided
 		GameEntity gameEntity = new GameEntity(staticModel, new Vector3f(xpos, ypos, zpos), xrot, yrot, zrot, scale);
 		return gameEntity;
