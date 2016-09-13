@@ -38,7 +38,7 @@ public class BasicGame {
 		GameEntity[] secondaryEntityList = new GameEntity[9];
 		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, 0, 0, 0, 1);
 		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, 0, 0, 0, 0, 1);
-		entityList[2] = makeGameEntity(modelLoader, "meow", 0, 0, 0, 0, 0, 0, 1);
+		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, 0, 0, 0, 0, 1);
 		GameEntity currentEntity = entityList[0];
 		//Creates the GameView for player vision
 		GameView gameView = new GameView();
@@ -61,11 +61,11 @@ public class BasicGame {
 			        }
 			    }
 			}
-			currentEntity.moveEntityPosition(0, 0.0f, -0.1f);
+			currentEntity.moveEntityPosition(0, 0.0f, -0.001f);
 			currentEntity.changeEntityRotation(0, 0.3f, 0.3f);
 			currentEntity.changeEntityScale(0.00f);
 			while(k < g){
-				secondaryEntityList[k].moveEntityPosition(.01f, 0.01f, -0.1f);
+				secondaryEntityList[k].moveEntityPosition(.01f, 0.01f, -0.001f);
 				secondaryEntityList[k].changeEntityRotation(0, 0.3f, 0.3f);
 				secondaryEntityList[k].changeEntityScale(0.00f);
 				k = k+1;
@@ -99,7 +99,7 @@ public class BasicGame {
 	}
 	public static GameEntity makeGameEntity(ObjectLoader modelLoader, String fileName, float xpos, float ypos, float zpos, float xrot, float yrot, float zrot, float scale){
 		//Load 3D model into UntexturedModel type model
-		UntexturedModel untexturedModel = OBJ_FileHandler.loadObjModel("chair", modelLoader);
+		UntexturedModel untexturedModel = OBJ_FileHandler.loadObjModel("thing", modelLoader);
 		//Load texture defined by name from res into GameModelTexture as a texture
 		GameModelTexture textureForModel = new GameModelTexture(modelLoader.loadTexture(fileName));
 		//Combine the UntexturedModel and the GameModelTexture just loaded to form a TexturedModel
