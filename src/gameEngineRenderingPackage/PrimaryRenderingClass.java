@@ -31,6 +31,8 @@ public class PrimaryRenderingClass {
 		GL20.glEnableVertexAttribArray(0);
 		//Enable the texture coordinate attribute from VAO
 		GL20.glEnableVertexAttribArray(1);
+		//Enable the normal vector attribute from VAO
+		GL20.glEnableVertexAttribArray(2);
 		//Transform the entity to comply to proper position, rotation, and scale
 		Matrix4f transformationMatrix = MathFuncs.initializeTransformingMatrix(gameEntity.getGameEntityPosition(), gameEntity.getGameEntityRotationX(), gameEntity.getGameEntityRotationY(), gameEntity.getGameEntityRotationZ(), gameEntity.getGameEntityScale());
 		//Load up the transformation matrix
@@ -45,6 +47,8 @@ public class PrimaryRenderingClass {
 		GL20.glDisableVertexAttribArray(0);
 		//Disable the texture coordinate attribute from VAO
 		GL20.glDisableVertexAttribArray(1);
+		//Disable the normal coordinate attribute from VAO
+		GL20.glDisableVertexAttribArray(2);
 		//Unbind
 		GL30.glBindVertexArray(0);
 	}

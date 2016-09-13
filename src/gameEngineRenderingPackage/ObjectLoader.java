@@ -26,7 +26,7 @@ public class ObjectLoader {
 	private List<Integer> vertexBufferObjectList = new ArrayList<Integer>();
 	//This is the loadIntoVertexArrayObject method which takes the vertex data from a 3D model, and the indices buffer, then loads the information into a VAO
 	//It will return an UntexturedModel of vertex data
-	public UntexturedModel loadIntoVertexArrayObject(float[] vertexPositions, float[] coordinatesOfTexture, int[] indexOrder){
+	public UntexturedModel loadIntoVertexArrayObject(float[] vertexPositions, float[] coordinatesOfTexture, float[] normalsForLighting, int[] indexOrder){
 		//Create new VAO
 		int vertexArrayObjectReferenceID = initializeVertexArrayObject();
 		//Bind Indices buffer to new VAO
@@ -35,6 +35,8 @@ public class ObjectLoader {
 		addDataToAttributeList(0, 3, vertexPositions);
 		//Store texture coordinates in second slot of VAO, as a 2D object
 		addDataToAttributeList(1, 2, coordinatesOfTexture);
+		//Store the normals for lighting in the 3rd slot of the VAO, as a 3D object
+		addDataToAttributeList(2, 3, normalsForLighting);
 		//Unbind VAO
 		unbindVertexArrayObject();
 		//Return the UntexturedModel, with the indices length

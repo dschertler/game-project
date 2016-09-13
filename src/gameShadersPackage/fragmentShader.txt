@@ -2,12 +2,29 @@
 //This is the fragment shader which takes the color values of several vertexes and blends accordingly
 //Input texture coordinates
 in vec2 pass_placementTexture;
+//Input the normal vector
+in vec3 normalSurface;
+//Input the light source vector
+in vec3 lightSourceVector;
 //Output Colored Pixels
 out vec4 out_Color;
-
+//This vector handles the lighting color
+uniform vec3 lColor;
+//This is for storing data about the texture sampling
 uniform sampler2D textureSampler;
 
 void main(void){
-	//Output the texture mapped to the proper coordinates
-	out_Color = texture(textureSampler, pass_placementTexture);
+
+	//Makes the size of the surface normal equal one
+	vec3 itemNorm = normalize(normalSurface);
+	//Makes the size of the light vector equal one
+	vec3 itemLightSourceVector = normalize(lightSourceVector);
+	//Find the dot product
+	float nDot1 = dot(itemNorm, itemLightSourceVector);
+	//Calculate brightness
+	float brightness = max(nDot1, 0.0);
+	//Calculate diffuse
+	vec3 diffuse = brightness * lColor;
+	//Output the texture mapped to the proper coordinates and proper lighting
+	out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_placementTexture);
 }

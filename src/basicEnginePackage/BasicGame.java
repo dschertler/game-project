@@ -13,6 +13,7 @@ import gameEngineRenderingPackage.OBJ_FileHandler;
 import gameEngineRenderingPackage.ObjectLoader;
 import gameEngineRenderingPackage.PrimaryRenderingClass;
 import gameEntitiesPackage.GameEntity;
+import gameEntitiesPackage.GameLighting;
 import gameEntitiesPackage.GameView;
 import gameModelPackage.UntexturedModel;
 import gameShadersPackage.StaticShader;
@@ -42,6 +43,8 @@ public class BasicGame {
 		GameEntity currentEntity = entityList[0];
 		//Creates the GameView for player vision
 		GameView gameView = new GameView();
+		//Create a light source
+		GameLighting gameLight = new GameLighting(new Vector3f(0, 0, -1), new Vector3f(1, 1, 1));
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
 			while (Keyboard.next()) {
@@ -76,6 +79,8 @@ public class BasicGame {
 			modelRenderer.beforeRender();
 			//Start shading
 			modelShader.beginShading();
+			//Start lighting
+			modelShader.loadLightVector(gameLight);
 			//Loads the camera to give the illusion of player movement
 			modelShader.loadViewMatrix(gameView);
 			//Render 3D textured model entity
