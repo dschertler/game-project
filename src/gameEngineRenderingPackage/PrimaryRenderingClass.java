@@ -1,5 +1,8 @@
 package gameEngineRenderingPackage;
 
+import java.util.List;
+import java.util.Map;
+
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -20,7 +23,9 @@ public class PrimaryRenderingClass {
 	private static final float nearPlane = 0.1f;
 	private static final float farPlane = 1000f;
 	private Matrix4f projectionMatrix;
+	private StaticShader shader;
 	//This function takes the entity to be rendered, and renders it to screen
+	/*
 	public void renderEntity(GameEntity gameEntity, StaticShader shader){
 		//Find the textured model from entity model
 		TexturedModel model = gameEntity.getGameEntityModel();
@@ -56,7 +61,7 @@ public class PrimaryRenderingClass {
 		GL20.glDisableVertexAttribArray(2);
 		//Unbind
 		GL30.glBindVertexArray(0);
-	}
+	}*/
 	//This function id to load up the projection matrix
 	//Create projection matrix creates a projection matrix which is used to make a percieved 3 dimensional space
 	private void initializeProjectionMatrix(){
@@ -85,7 +90,67 @@ public class PrimaryRenderingClass {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);	
 		GL11.glClearColor(1, 0, 0, 1);	
 	}
+	//PrimaryRenderingClass renders all the entities in the entity map
+	public void renderEntity(Map<TexturedModel, List<GameEntity>> entitiesMap){
+		//For all textured models in the entities map
+		for(TexturedModel texturedModel: entitiesMap.keySet()){
+			//Initiate the textured model
+			initiateTexturedModel(texturedModel);
+			//Get the model and load to the batch list
+			List<GameEntity> batch = entitiesMap.get(texturedModel);
+			//For all the game entities
+			for(GameEntity entity : batch){
+				//Initiate the entity
+				initiateInstance(entity);
+				//Render the model as triangles, based on start point 0, and VertexAmount many objects
+				GL11.glDrawElements(GL11.GL_TRIANGLES, texturedModel.getUntexturedModel().getVertexAmount(), GL11.GL_UNSIGNED_INT, 0);
+			}
+		//Unbind the textured model
+		unbindTexturedModel();
+		}
+	}
+	//This function is for initiating textured models
+	private void initiateTexturedModel(TexturedModel texturedModel){
+		//Reference the raw model from the entity model
+		UntexturedModel untexturedModel = texturedModel.getUntexturedModel();
+		//Bind the model's VAO
+		GL30.glBindVertexArray(untexturedModel.getVertexArrayObjectReferenceID());
+		//Enable the vertex position attribute from VAO
+		GL20.glEnableVertexAttribArray(0);
+		//Enable the texture coordinate attribute from VAO
+		GL20.glEnableVertexAttribArray(1);
+		//Enable the normal vector attribute from VAO
+		GL20.glEnableVertexAttribArray(2);
+		//Load up the light properties
+		GameModelTexture texture = texturedModel.getTexture();
+		//Start light shading
+		shader.loadLightVariables(texture.getCameraProximityToShine(), texture.getShine());
+		//Activate texturing using the uniform texture sampler
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		//Bind the texture to the object according to its texture ID
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getID());
+	}
+	//This function unbinds the texture model
+	private void unbindTexturedModel(){
+		//Disable the vertex position attribute from VAO
+		GL20.glDisableVertexAttribArray(0);
+		//Disable the texture coordinate attribute from VAO
+		GL20.glDisableVertexAttribArray(1);
+		//Disable the normal coordinate attribute from VAO
+		GL20.glDisableVertexAttribArray(2);
+		//Unbind
+		GL30.glBindVertexArray(0);
+	}
+	
+	private void initiateInstance(GameEntity gameEntity){
+		//Transform the entity to comply to proper position, rotation, and scale
+		Matrix4f transformationMatrix = MathFuncs.initializeTransformingMatrix(gameEntity.getGameEntityPosition(), gameEntity.getGameEntityRotationX(), gameEntity.getGameEntityRotationY(), gameEntity.getGameEntityRotationZ(), gameEntity.getGameEntityScale());
+		//Load up the transformation matrix
+		shader.loadTransformationMatrix(transformationMatrix);
+	}
+	
 	public PrimaryRenderingClass(StaticShader shader){
+		this.shader = shader;
 		//Don't render triangles which aren't facing the gameView
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_BACK);

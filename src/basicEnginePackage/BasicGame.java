@@ -9,6 +9,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 
 import gameEngineRenderingPackage.GameDisplay;
+import gameEngineRenderingPackage.MasterRenderingClass;
 import gameEngineRenderingPackage.OBJ_FileHandler;
 import gameEngineRenderingPackage.ObjectLoader;
 import gameEngineRenderingPackage.PrimaryRenderingClass;
@@ -27,10 +28,8 @@ public class BasicGame {
 		GameDisplay.displayMake();
 		//Creates the modelLoader for loading 3D models
 		ObjectLoader modelLoader = new ObjectLoader();
-		//creates the modelShader for shading 3D models
-		StaticShader modelShader = new StaticShader(null, null);
-		//Creates the modelRenderer for rendering 3D models
-		PrimaryRenderingClass modelRenderer = new PrimaryRenderingClass(modelShader);
+		//Creates the primaryRenderer for rendering all objects
+		MasterRenderingClass primaryRenderer = new MasterRenderingClass();
 		
 		int i = 0;
 		int g = 0;
@@ -67,6 +66,9 @@ public class BasicGame {
 			currentEntity.moveEntityPosition(0, 0.0f, -0.001f);
 			currentEntity.changeEntityRotation(0, 0.3f, 0.3f);
 			currentEntity.changeEntityScale(0.00f);
+			primaryRenderer.handleGameEntity(entityList[0]);
+			primaryRenderer.handleGameEntity(entityList[1]);
+			primaryRenderer.handleGameEntity(entityList[2]);
 			while(k < g){
 				secondaryEntityList[k].moveEntityPosition(.01f, 0.01f, -0.001f);
 				secondaryEntityList[k].changeEntityRotation(0, 0.3f, 0.3f);
@@ -75,28 +77,12 @@ public class BasicGame {
 			}
 			k = 0;
 			gameView.moveGameView();
-			//Prepare to render
-			modelRenderer.beforeRender();
-			//Start shading
-			modelShader.beginShading();
-			//Start lighting
-			modelShader.loadLightVector(gameLight);
-			//Loads the camera to give the illusion of player movement
-			modelShader.loadViewMatrix(gameView);
-			//Render 3D textured model entity
-			modelRenderer.renderEntity(currentEntity, modelShader);
-			while(k < g){
-				modelRenderer.renderEntity(secondaryEntityList[k], modelShader);
-				k = k+1;
-			}
-			k = 0;
-			//Stop shading
-			modelShader.endShading();
+			primaryRenderer.renderEntity(gameLight, gameView);
 			//Update display
 			GameDisplay.displayRefresh();
 		}
-		//Delete leftover gameShadersPackage
-		modelShader.removeLeftOverShaders();
+		//Delete leftover game shaders
+		primaryRenderer.removeLeftOverShaders();
 		//Delete all VAOs & VAOs
 		modelLoader.removeLeftOverObjects();
 		//Close the application
