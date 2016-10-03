@@ -1,0 +1,39 @@
+#version 400 core
+//This is the vertexShader, which takes a vertex placement, and assigns color values to it
+//Input placement
+in vec3 placementVector;
+//Input Texture Coordinates
+in vec2 placementTexture;
+//Input normalVector
+in vec3 normalVector;
+//Output Texture Coords to fragment shader
+out vec2 pass_placementTexture;
+//Output the object's normal surface pointing off a given object
+out vec3 normalSurface;
+//Output the object's vector pointing to the light source
+out vec3 lightSourceVector;
+//Output the vector to the camera
+out vec3 vectorTowardsCamera;
+//This uniform vector handles the light position
+uniform vec3 lPosition;
+//The uniform matrix which handles vertex transformations
+uniform mat4 transformationMatrix;
+//The uniform matrix that handles projections to give the illusion of 3 dimensional space
+uniform mat4 projectionMatrix;
+//The uniform matrix that handles the camera view to give the illusion of controlled movement
+uniform mat4 viewMatrix;
+
+void main (void){
+	//Find the global position of the vertex
+	vec4 globalPosition = transformationMatrix * vec4(placementVector, 1.0);
+	//Set the render position given its matrix transformation, view matrix, and projection matrix
+	gl_Position = projectionMatrix * viewMatrix * globalPosition;
+	//Calculate texture based on placement and coords
+	pass_placementTexture = placementTexture * 40;
+	//Find the vertex's normal (the one that points directly out of vector)
+	normalSurface = (transformationMatrix * vec4(normalVector, 0.0)).xyz;
+	//Find the vertex's lightSourceVector (the one which points towards the light source)
+	lightSourceVector = lPosition - globalPosition.xyz;
+	//Find the vector which is pointing towards the camera
+	vectorTowardsCamera = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - globalPosition.xyz; 
+}

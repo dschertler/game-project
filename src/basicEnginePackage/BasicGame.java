@@ -12,12 +12,13 @@ import gameEngineRenderingPackage.GameDisplay;
 import gameEngineRenderingPackage.MasterRenderingClass;
 import gameEngineRenderingPackage.OBJ_FileHandler;
 import gameEngineRenderingPackage.ObjectLoader;
-import gameEngineRenderingPackage.PrimaryRenderingClass;
+import gameEngineRenderingPackage.EntityRenderingClass;
 import gameEntitiesPackage.GameEntity;
 import gameEntitiesPackage.GameLighting;
 import gameEntitiesPackage.GameView;
 import gameModelPackage.UntexturedModel;
 import gameShadersPackage.StaticShader;
+import gameTerrainPackage.GameTerrain;
 import gameTexturesPackage.GameModelTexture;
 import gameModelPackage.TexturedModel;
 //This is the BasicGame class, which handles running the actual game
@@ -39,11 +40,13 @@ public class BasicGame {
 		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, 0, 0, 0, 1, 10, 1);
 		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, 0, 0, 0, 0, 1, 10, 1);
 		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, 0, 0, 0, 0, 1, 10, 1);
+		GameTerrain terrain = new GameTerrain(-1, -1, modelLoader, new GameModelTexture(modelLoader.loadTexture("haruhi")));
+		GameTerrain terrain2 = new GameTerrain(0, 0, modelLoader, new GameModelTexture(modelLoader.loadTexture("haruhi")));
 		GameEntity currentEntity = entityList[0];
 		//Creates the GameView for player vision
 		GameView gameView = new GameView();
 		//Create a light source
-		GameLighting gameLight = new GameLighting(new Vector3f(0, 0, -1), new Vector3f(1, 1, 1));
+		GameLighting gameLight = new GameLighting(new Vector3f(0, 1, -1), new Vector3f(1, 1, 1));
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
 			while (Keyboard.next()) {
@@ -66,6 +69,8 @@ public class BasicGame {
 			currentEntity.moveEntityPosition(0, 0.0f, -0.001f);
 			currentEntity.changeEntityRotation(0, 0.3f, 0.3f);
 			currentEntity.changeEntityScale(0.00f);
+			primaryRenderer.addTerrain(terrain);
+			primaryRenderer.addTerrain(terrain2);
 			primaryRenderer.handleGameEntity(entityList[0]);
 			primaryRenderer.handleGameEntity(entityList[1]);
 			primaryRenderer.handleGameEntity(entityList[2]);
@@ -104,5 +109,17 @@ public class BasicGame {
 		//Creates a GameEntity based on TexturedModel loaded at coordinates provided
 		GameEntity gameEntity = new GameEntity(staticModel, new Vector3f(xpos, ypos, zpos), xrot, yrot, zrot, scale);
 		return gameEntity;
+	}
+	
+	public static GameTerrain makeGameTerrain(int xPos, int zPos, ObjectLoader objectLoader, GameModelTexture texture){
+		//Load 3D model into UntexturedModel type model
+				UntexturedModel untexturedModel = OBJ_FileHandler.loadObjModel("thing", objectLoader);
+				//Load texture defined by name from res into GameModelTexture as a texture
+				GameModelTexture textureForModel = texture;
+				//Combine the UntexturedModel and the GameModelTexture just loaded to form a TexturedModel
+				TexturedModel staticModel = new TexturedModel(untexturedModel, textureForModel);
+				//Add light properties to model
+				GameTerrain terrain = new GameTerrain(xPos, zPos, objectLoader, texture);
+				return terrain;
 	}
 }

@@ -1,0 +1,50 @@
+#version 400 core
+//This is the fragment shader which takes the color values of several vertexes and blends accordingly
+//Input texture coordinates
+in vec2 pass_placementTexture;
+//Input the normal vector
+in vec3 normalSurface;
+//Input the light source vector
+in vec3 lightSourceVector;
+//Input the vector pointing towards the game view
+in vec3 vectorTowardsCamera;
+//Output Colored Pixels
+out vec4 out_Color;
+//This vector handles the lighting color
+uniform vec3 lColor;
+//This is for storing data about the texture sampling
+uniform sampler2D textureSampler;
+//This is for storing the camera proximity to shine vector
+uniform float cameraProximityToShine;
+//This is for storing the amount of shine on an object
+uniform float shine;
+
+void main(void){
+
+	//Makes the size of the surface normal equal one
+	vec3 itemNorm = normalize(normalSurface);
+	//Makes the size of the light vector equal one
+	vec3 itemLightSourceVector = normalize(lightSourceVector);
+	//Find the dot product
+	float nDot1 = dot(itemNorm, itemLightSourceVector);
+	//Calculate brightness
+	float brightness = max(nDot1, 0.0);
+	//Calculate diffuse
+	vec3 diffuse = brightness * lColor;
+	//Normalize the vector to one
+	vec3 vectorTowardsCameraNorm = normalize(vectorTowardsCamera);
+	//Find the inverse of the light vector
+	vec3 directionOfLight = -itemLightSourceVector;
+	//Call the reflect function to determine shine
+	vec3 shineyLightVector = reflect(directionOfLight, itemNorm);
+	//Find the strength of the shine
+	float shineStrength = dot(shineyLightVector, vectorTowardsCameraNorm); 
+	//Ensure positive brightness adjust second value for ambient light
+	shineStrength = max(shineStrength, 0.1);
+	//Apply dampening to lighting
+	float shineDampening = pow(shineStrength, cameraProximityToShine);
+	//Ensure proper light color
+	vec3 finalShine = shineDampening * lColor;
+	//Output the texture mapped to the proper coordinates and proper lighting
+	out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_placementTexture) + vec4(finalShine, 1.0);
+}

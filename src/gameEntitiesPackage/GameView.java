@@ -5,7 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class GameView {
 	
-	private Vector3f gameViewPosition = new Vector3f(0,0,0);
+	private Vector3f gameViewPosition = new Vector3f(0,1,0);
 	private float gameViewPitch;
 	private float gameViewYaw;
 	private float gameViewRoll;
@@ -21,6 +21,12 @@ public class GameView {
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
 			gameViewPosition.z -= 0.02f;
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_E)){
+			gameViewPosition.y += 0.02f;
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_Q)){
+			gameViewRoll += 0.02f;
 		}
 	}
 	//Getters and setters for the class
