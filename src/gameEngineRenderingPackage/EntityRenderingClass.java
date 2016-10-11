@@ -54,6 +54,12 @@ public class EntityRenderingClass {
 		GL20.glEnableVertexAttribArray(2);
 		//Load up the light properties
 		GameModelTexture texture = texturedModel.getTexture();
+		//Check object for transparency
+		if(texture.isTransparent()){
+			MasterRenderingClass.unInitiateBackFaceCulling();
+		}
+		//Enable the use of false lighting for certain textures
+		shader.loadFalseLightVariable(texture.isImplementsFalseLighting());
 		//Start light shading
 		shader.loadLightVariables(texture.getCameraProximityToShine(), texture.getShine());
 		//Activate texturing using the uniform texture sampler
@@ -63,6 +69,7 @@ public class EntityRenderingClass {
 	}
 	//This function unbinds the texture model
 	private void unbindTexturedModel(){
+		MasterRenderingClass.initiateBackFaceCulling();
 		//Disable the vertex position attribute from VAO
 		GL20.glDisableVertexAttribArray(0);
 		//Disable the texture coordinate attribute from VAO

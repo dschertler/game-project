@@ -1,6 +1,7 @@
 package gameShadersPackage;
 
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import basicGameEngineToolsPackage.MathFuncs;
 import gameEntitiesPackage.GameLighting;
@@ -19,6 +20,8 @@ public class StaticShader extends AbstractShaderManager{
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
+	private int location_implementFalseLighting;
+	private int location_colorOfSky;
 	
 	public StaticShader(String vertexFile, String fragmentFile) {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -51,6 +54,18 @@ public class StaticShader extends AbstractShaderManager{
 		location_projectionMatrix = super.findSingleUniformVariable("projectionMatrix");
 		//Store the location of the view matrix
 		location_viewMatrix = super.findSingleUniformVariable("viewMatrix");
+		//Store the location of the false lighting variable
+		location_implementFalseLighting = super.findSingleUniformVariable("implementFalseLighting");
+		//Store the location of the false lighting variable
+		location_colorOfSky = super.findSingleUniformVariable("colorOfSky");
+	}
+	//Load up the sky color
+	public void loadSkyColor(float r, float g, float b){
+		super.loadVectorToUniformVariable(location_colorOfSky, new Vector3f(r,g,b));
+	}
+	//Loads the information of the boolean into the false lighting variable
+	public void loadFalseLightVariable(boolean isFalse){
+		super.loadBooleanToUniformVariable(location_implementFalseLighting, isFalse);
 	}
 	//Load the information of the light vector to the uniform variable
 	public void loadLightVector(GameLighting gameLight){

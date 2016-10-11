@@ -4,6 +4,9 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
@@ -43,6 +46,11 @@ public class BasicGame {
 		GameTerrain terrain = new GameTerrain(-1, -1, modelLoader, new GameModelTexture(modelLoader.loadTexture("haruhi")));
 		GameTerrain terrain2 = new GameTerrain(0, 0, modelLoader, new GameModelTexture(modelLoader.loadTexture("haruhi")));
 		GameEntity currentEntity = entityList[0];
+        Result result = JUnitCore.runClasses(EngineTester.class);
+        
+        for(Failure failure : result.getFailures()){
+            System.out.println(failure.toString());
+        }
 		//Creates the GameView for player vision
 		GameView gameView = new GameView();
 		//Create a light source

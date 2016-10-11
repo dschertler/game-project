@@ -1,6 +1,7 @@
 package gameShadersPackage;
 
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import basicGameEngineToolsPackage.MathFuncs;
 import gameEntitiesPackage.GameLighting;
@@ -17,7 +18,8 @@ public class GameTerrainShader extends AbstractShaderManager{
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
-	
+	private int location_colorOfSky;
+
 	public GameTerrainShader (String vertexFile, String fragmentFile) {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 		// TODO Auto-generated constructor stub
@@ -49,6 +51,12 @@ public class GameTerrainShader extends AbstractShaderManager{
 		location_projectionMatrix = super.findSingleUniformVariable("projectionMatrix");
 		//Store the location of the view matrix
 		location_viewMatrix = super.findSingleUniformVariable("viewMatrix");
+		//Store the location of the false lighting variable
+		location_colorOfSky = super.findSingleUniformVariable("colorOfSky");
+	}
+	//Load up the sky color
+	public void loadSkyColor(float r, float g, float b){
+		super.loadVectorToUniformVariable(location_colorOfSky, new Vector3f(r,g,b));
 	}
 	//Load the information of the light vector to the uniform variable
 	public void loadLightVector(GameLighting gameLight){

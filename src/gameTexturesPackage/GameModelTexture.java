@@ -5,6 +5,21 @@ public class GameModelTexture {
 	private float cameraProximityToShine = 1;
 	private float shine = 0;
 	
+	private boolean isTransparent = false;
+	private boolean implementsFalseLighting = false;
+	
+	public boolean isImplementsFalseLighting() {
+		return implementsFalseLighting;
+	}
+	public void setImplementsFalseLighting(boolean implementsFalseLighting) {
+		this.implementsFalseLighting = implementsFalseLighting;
+	}
+	public boolean isTransparent() {
+		return isTransparent;
+	}
+	public void setTransparent(boolean isTransparent) {
+		this.isTransparent = isTransparent;
+	}
 	private int textureID;
 	//Assign the texture ID
 	public GameModelTexture(int id){

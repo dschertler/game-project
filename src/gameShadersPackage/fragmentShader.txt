@@ -8,6 +8,8 @@ in vec3 normalSurface;
 in vec3 lightSourceVector;
 //Input the vector pointing towards the game view
 in vec3 vectorTowardsCamera;
+//Input the fog visability
+in float fogVisibility;
 //Output Colored Pixels
 out vec4 out_Color;
 //This vector handles the lighting color
@@ -18,6 +20,8 @@ uniform sampler2D textureSampler;
 uniform float cameraProximityToShine;
 //This is for storing the amount of shine on an object
 uniform float shine;
+//This is for storing the sky color
+uniform vec3 colorOfSky;
 
 void main(void){
 
@@ -45,6 +49,14 @@ void main(void){
 	float shineDampening = pow(shineStrength, cameraProximityToShine);
 	//Ensure proper light color
 	vec3 finalShine = shineDampening * lColor;
+	//For handling transparency
+	vec4 textureColor = texture(textureSampler, pass_placementTexture);
+	//Remove any alpha colors less than .5 for transparency
+	if(textureColor.a < 0.5){
+		discard;
+	}
 	//Output the texture mapped to the proper coordinates and proper lighting
-	out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_placementTexture) + vec4(finalShine, 1.0);
+	out_Color = vec4(diffuse, 1.0) * textureColor + vec4(finalShine, 1.0);
+	//Output the visibility of the object
+	out_Color = mix(vec4(colorOfSky,1.0), out_Color, fogVisibility);
 }

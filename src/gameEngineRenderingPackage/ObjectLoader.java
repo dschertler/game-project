@@ -147,5 +147,4 @@ public class ObjectLoader {
 	private void unbindVertexArrayObject(){
 		GL30.glBindVertexArray(0);
 	}
-
 }
