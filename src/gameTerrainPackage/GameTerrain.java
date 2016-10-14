@@ -12,11 +12,13 @@ public class GameTerrain {
 		private float x;
 		private float z;
 		private UntexturedModel untexturedModel;
-		private GameModelTexture gameModelTexture;
+		private GameTerrainTexture_Collection gameTerrainTexture_Collection;
+		private GameTerrainTexture blendMap;
 		
 		//Constructor for terrain
-		public GameTerrain(int xGrid, int zGrid, ObjectLoader objectLoader, GameModelTexture gameModelTexture){
-			this.gameModelTexture = gameModelTexture;
+		public GameTerrain(int xGrid, int zGrid, ObjectLoader objectLoader, GameTerrainTexture_Collection gameTerrainTexture_Collection, GameTerrainTexture blendMap){
+			this.blendMap = blendMap;
+			this.gameTerrainTexture_Collection = gameTerrainTexture_Collection;
 			this.x = TERRAIN_SIZE * xGrid;
 			this.z = TERRAIN_SIZE * zGrid;
 			this.untexturedModel = createGameTerrain(objectLoader);
@@ -99,10 +101,21 @@ public class GameTerrain {
 		public void setUntexturedModel(UntexturedModel untexturedModel) {
 			this.untexturedModel = untexturedModel;
 		}
-		public GameModelTexture getGameModelTexture() {
-			return gameModelTexture;
+
+		public GameTerrainTexture_Collection getGameTerrainTexture_Collection() {
+			return gameTerrainTexture_Collection;
 		}
-		public void setGameModelTexture(GameModelTexture gameModelTexture) {
-			this.gameModelTexture = gameModelTexture;
+
+		public void setGameTerrainTexture_Collection(GameTerrainTexture_Collection gameTerrainTexture_Collection) {
+			this.gameTerrainTexture_Collection = gameTerrainTexture_Collection;
 		}
+
+		public GameTerrainTexture getBlendMap() {
+			return blendMap;
+		}
+
+		public void setBlendMap(GameTerrainTexture blendMap) {
+			this.blendMap = blendMap;
+		}
+
 }

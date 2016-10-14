@@ -19,7 +19,12 @@ public class GameTerrainShader extends AbstractShaderManager{
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
 	private int location_colorOfSky;
-
+	private int location_backgroundTexture;
+	private int location_redTexture;
+	private int location_blueTexture;
+	private int location_greenTexture;
+	private int location_blendMap;
+	
 	public GameTerrainShader (String vertexFile, String fragmentFile) {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 		// TODO Auto-generated constructor stub
@@ -53,7 +58,33 @@ public class GameTerrainShader extends AbstractShaderManager{
 		location_viewMatrix = super.findSingleUniformVariable("viewMatrix");
 		//Store the location of the false lighting variable
 		location_colorOfSky = super.findSingleUniformVariable("colorOfSky");
+		//Store the location of the backgroundTexture
+		location_backgroundTexture = super.findSingleUniformVariable("backgroundTexture");
+		//Store the location of the redTexture
+		location_redTexture = super.findSingleUniformVariable("redTexture");
+		//Store the location of the blueTexture
+		location_blueTexture = super.findSingleUniformVariable("blueTexture");
+		//Store the location of the greenTexture
+		location_greenTexture = super.findSingleUniformVariable("greenTexture");
+		//Store the location of the blendMap
+		location_blendMap = super.findSingleUniformVariable("blendMap");
 	}
+	
+	//Mix the texture units
+	public void mixTerrainTextures(){
+		//Load the background into its uniform variable
+		super.loadInteger(location_backgroundTexture, 0);
+		//Load the red into its uniform variable
+		super.loadInteger(location_redTexture, 1);
+		//Load the blue into its uniform variable
+		super.loadInteger(location_blueTexture, 2);
+		//Load the green into its uniform variable
+		super.loadInteger(location_greenTexture, 3);
+		//Load the blendmap into its uniform variable
+		super.loadInteger(location_blendMap, 4);
+		
+	}
+	
 	//Load up the sky color
 	public void loadSkyColor(float r, float g, float b){
 		super.loadVectorToUniformVariable(location_colorOfSky, new Vector3f(r,g,b));

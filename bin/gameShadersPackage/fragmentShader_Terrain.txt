@@ -12,6 +12,14 @@ in vec3 vectorTowardsCamera;
 in float fogVisibility;
 //Output Colored Pixels
 out vec4 out_Color;
+
+//Uniform variables for multi texturing
+uniform sampler2D backgroundTexture;
+uniform sampler2D redTexture;
+uniform sampler2D blueTexture;
+uniform sampler2D greenTexture;
+uniform sampler2D blendMap;
+
 //This vector handles the lighting color
 uniform vec3 lColor;
 //This is for storing data about the texture sampling
@@ -25,6 +33,23 @@ uniform vec3 colorOfSky;
 
 void main(void){
 
+	//Get the blended color
+	vec4 blendedColor = texture(blendMap, pass_placementTexture);
+	//The strength of the background color
+	float backgroundTextureStrength = 1 - (blendedColor.r + blendedColor.b + blendedColor.g);
+	//Calculate the location of the tile 
+	vec2 tilePlacement = pass_placementTexture * 40.0;
+	//Calculate background tiles
+	vec4 textureOfBackground = texture(backgroundTexture, tilePlacement) * backgroundTextureStrength;
+	//Calculate the red texture
+	vec4 textureOfRed = texture(redTexture, tilePlacement) * blendedColor.r;
+	//Calculate the blue texture
+	vec4 textureOfBlue = texture(blueTexture, tilePlacement) * blendedColor.b;
+	//Calculate the green texture
+	vec4 textureOfGreen = texture(greenTexture, tilePlacement) * blendedColor.g;
+	
+	//Calculate all colors
+	vec4 allColors = textureOfBackground + textureOfRed + textureOfBlue + textureOfGreen;
 	//Makes the size of the surface normal equal one
 	vec3 itemNorm = normalize(normalSurface);
 	//Makes the size of the light vector equal one
@@ -50,7 +75,7 @@ void main(void){
 	//Ensure proper light color
 	vec3 finalShine = shineDampening * lColor;
 	//Output the texture mapped to the proper coordinates and proper lighting
-	out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_placementTexture) + vec4(finalShine, 1.0);
+	out_Color = vec4(diffuse, 1.0) * allColors + vec4(finalShine, 1.0);
 	//Output the visibility of the object
 	out_Color = mix(vec4(colorOfSky,1.0), out_Color, fogVisibility);
 }

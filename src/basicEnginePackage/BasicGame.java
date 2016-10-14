@@ -22,6 +22,8 @@ import gameEntitiesPackage.GameView;
 import gameModelPackage.UntexturedModel;
 import gameShadersPackage.StaticShader;
 import gameTerrainPackage.GameTerrain;
+import gameTerrainPackage.GameTerrainTexture;
+import gameTerrainPackage.GameTerrainTexture_Collection;
 import gameTexturesPackage.GameModelTexture;
 import gameModelPackage.TexturedModel;
 //This is the BasicGame class, which handles running the actual game
@@ -35,6 +37,16 @@ public class BasicGame {
 		//Creates the primaryRenderer for rendering all objects
 		MasterRenderingClass primaryRenderer = new MasterRenderingClass();
 		
+		//Terrains
+		GameTerrainTexture backgroundTexture = new GameTerrainTexture(modelLoader.loadTexture("Dark_Rock"));
+		GameTerrainTexture redTexture = new GameTerrainTexture(modelLoader.loadTexture("Red_Rock"));
+		GameTerrainTexture blueTexture = new GameTerrainTexture(modelLoader.loadTexture("Purple_Rock"));
+		GameTerrainTexture greenTexture = new GameTerrainTexture(modelLoader.loadTexture("Pink_Rock"));
+		
+		GameTerrainTexture_Collection gameTerrainTexture_Collection = new GameTerrainTexture_Collection(backgroundTexture, redTexture, blueTexture, greenTexture);
+		GameTerrainTexture blendMap = new GameTerrainTexture(modelLoader.loadTexture("blendmap"));
+		
+		
 		int i = 0;
 		int g = 0;
 		int k = 0;
@@ -43,8 +55,8 @@ public class BasicGame {
 		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, 0, 0, 0, 1, 10, 1);
 		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, 0, 0, 0, 0, 1, 10, 1);
 		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, 0, 0, 0, 0, 1, 10, 1);
-		GameTerrain terrain = new GameTerrain(-1, -1, modelLoader, new GameModelTexture(modelLoader.loadTexture("haruhi")));
-		GameTerrain terrain2 = new GameTerrain(0, 0, modelLoader, new GameModelTexture(modelLoader.loadTexture("haruhi")));
+		GameTerrain terrain = new GameTerrain(-1, -1, modelLoader, gameTerrainTexture_Collection, blendMap);
+		GameTerrain terrain2 = new GameTerrain(-1, -1, modelLoader, gameTerrainTexture_Collection, blendMap);
 		GameEntity currentEntity = entityList[0];
         Result result = JUnitCore.runClasses(EngineTester.class);
         
@@ -54,7 +66,7 @@ public class BasicGame {
 		//Creates the GameView for player vision
 		GameView gameView = new GameView();
 		//Create a light source
-		GameLighting gameLight = new GameLighting(new Vector3f(0, 1, -1), new Vector3f(1, 1, 1));
+		GameLighting gameLight = new GameLighting(new Vector3f(0, 10, -1), new Vector3f(1, 1, 1));
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
 			while (Keyboard.next()) {
@@ -118,7 +130,7 @@ public class BasicGame {
 		GameEntity gameEntity = new GameEntity(staticModel, new Vector3f(xpos, ypos, zpos), xrot, yrot, zrot, scale);
 		return gameEntity;
 	}
-	
+	/*
 	public static GameTerrain makeGameTerrain(int xPos, int zPos, ObjectLoader objectLoader, GameModelTexture texture){
 		//Load 3D model into UntexturedModel type model
 				UntexturedModel untexturedModel = OBJ_FileHandler.loadObjModel("thing", objectLoader);
@@ -127,7 +139,7 @@ public class BasicGame {
 				//Combine the UntexturedModel and the GameModelTexture just loaded to form a TexturedModel
 				TexturedModel staticModel = new TexturedModel(untexturedModel, textureForModel);
 				//Add light properties to model
-				GameTerrain terrain = new GameTerrain(xPos, zPos, objectLoader, texture);
+				GameTerrain terrain = new GameTerrain(xPos, zPos, , gameTerrainTexture_Collection, blendMap);
 				return terrain;
-	}
+	}*/
 }

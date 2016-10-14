@@ -22,6 +22,9 @@ public class GameView {
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
 			gameViewPosition.z -= 0.02f;
 		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_S)){
+			gameViewPosition.z += 0.02f;
+		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_E)){
 			gameViewPosition.y += 0.02f;
 		}

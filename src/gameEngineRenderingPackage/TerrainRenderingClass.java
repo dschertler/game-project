@@ -16,6 +16,7 @@ import gameModelPackage.UntexturedModel;
 import gameShadersPackage.GameTerrainShader;
 
 import gameTerrainPackage.GameTerrain;
+import gameTerrainPackage.GameTerrainTexture_Collection;
 import gameTexturesPackage.GameModelTexture;
 
 public class TerrainRenderingClass {
@@ -26,9 +27,10 @@ public class TerrainRenderingClass {
 		this.gameTerrainShader = gameTerrainShader;
 		gameTerrainShader.beginShading();
 		gameTerrainShader.loadProjectionMatrix(projectionMatrix);
+		gameTerrainShader.mixTerrainTextures();
 		gameTerrainShader.endShading();
 	}
-	
+	//For Rendering the terrain
 	public void renderTerrains(List<GameTerrain> gameTerrains){
 		for(GameTerrain gameTerrain:gameTerrains){
 			initiateGameTerrain(gameTerrain);
@@ -49,15 +51,31 @@ public class TerrainRenderingClass {
 		GL20.glEnableVertexAttribArray(1);
 		//Enable the normal vector attribute from VAO
 		GL20.glEnableVertexAttribArray(2);
-		//Load up the light properties
-		GameModelTexture texture = terrainModel.getGameModelTexture();
+		//Attach the textures
+		attachTextures(terrainModel);
 		//Start light shading
-		gameTerrainShader.loadLightVariables(texture.getCameraProximityToShine(), texture.getShine());
-		//Activate texturing using the uniform texture sampler
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		//Bind the texture to the object according to its texture ID
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getID());
+		gameTerrainShader.loadLightVariables(1,0);
 	}
+	
+	//This function attaches various textures to different units
+	private void attachTextures(GameTerrain gameTerrain){
+		//Get the texture collection from gameTerrain
+		GameTerrainTexture_Collection gameTerrainTexture_Collection = gameTerrain.getGameTerrainTexture_Collection();
+		//Activate and attach the background texture to the 1st unit
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrainTexture_Collection.getBackgroundTexture().getTextureReferenceID());
+		//Activate and attach the red texture to the 2nd unit
+		GL13.glActiveTexture(GL13.GL_TEXTURE1);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrainTexture_Collection.getRedTexture().getTextureReferenceID());
+		//Activate and attach the blue texture to the 3rd unit
+		GL13.glActiveTexture(GL13.GL_TEXTURE3);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrainTexture_Collection.getBlueTexture().getTextureReferenceID());
+		//Activate and attach the green texture to the 4th unit
+		GL13.glActiveTexture(GL13.GL_TEXTURE4);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrainTexture_Collection.getGreenTexture().getTextureReferenceID());
+		
+	}
+	
 	//This function unbinds the texture model
 	private void unbindGameTerrain(){
 		//Disable the vertex position attribute from VAO

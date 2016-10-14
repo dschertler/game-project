@@ -64,6 +64,10 @@ public abstract class AbstractShaderManager {
 	protected void loadFloatToUniformVariable(int location, float value){
 		GL20.glUniform1f(location, value);
 	}
+	//Used for loading an int value into a uniform variable
+	protected void loadInteger(int placement, int val){
+		GL20.glUniform1i(placement, val);
+	}
 	//Used for loading a vector into a uniform variable
 	protected void loadVectorToUniformVariable(int location, Vector3f vector){
 		GL20.glUniform3f(location, vector.x, vector.y, vector.z);
@@ -134,4 +138,5 @@ public abstract class AbstractShaderManager {
 		//Delete the shader program
 		GL20.glDeleteProgram(programReferenceID);
 	}
+
 }

@@ -1,5 +1,6 @@
 package gameShadersPackage;
 
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -90,4 +91,5 @@ public class StaticShader extends AbstractShaderManager{
 	public void loadProjectionMatrix(Matrix4f projection){
 		super.loadMatrixToUniformVariable(location_projectionMatrix, projection);
 	}
+
 }

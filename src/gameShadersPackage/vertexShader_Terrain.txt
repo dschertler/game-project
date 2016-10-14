@@ -37,7 +37,7 @@ void main (void){
 	//Set the render position given its matrix transformation, view matrix, and projection matrix
 	gl_Position = projectionMatrix * distanceFromCamera;
 	//Calculate texture based on placement and coords
-	pass_placementTexture = placementTexture * 40;
+	pass_placementTexture = placementTexture;
 	//Find the vertex's normal (the one that points directly out of vector)
 	normalSurface = (transformationMatrix * vec4(normalVector, 0.0)).xyz;
 	//Find the vertex's lightSourceVector (the one which points towards the light source)
