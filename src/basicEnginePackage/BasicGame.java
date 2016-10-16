@@ -74,13 +74,15 @@ public class BasicGame {
 		GameLighting gameLight = new GameLighting(new Vector3f(100, 100, 10), new Vector3f(0.6f, 0.5f, 0.5f));
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
-			user.moveUser();
+			user.moveUser(terrain);
 			while (Keyboard.next()) {
 			    if (Keyboard.getEventKeyState()) {
 			        switch (Keyboard.getEventKey()) {
 			            case Keyboard.KEY_V: 
 			            	currentEntity.setGameEntityModel(entityList[i].getGameEntityModel()); 
 			            	i = i+1;
+			            	System.out.println(user.getGameEntityPosition().x);
+			            	System.out.println(user.getGameEntityPosition().z);
 			            	if(i == entityList.length) i = 0;
 			            	break;
 			            case Keyboard.KEY_G:

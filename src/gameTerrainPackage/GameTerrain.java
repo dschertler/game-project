@@ -7,8 +7,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import basicGameEngineToolsPackage.MathFuncs;
 import gameEngineRenderingPackage.ObjectLoader;
 import gameModelPackage.UntexturedModel;
 import gameTexturesPackage.GameModelTexture;
@@ -25,6 +27,8 @@ public class GameTerrain {
 		private GameTerrainTexture_Collection gameTerrainTexture_Collection;
 		private GameTerrainTexture blendMap;
 		
+		private float[][] tableOfHeight;
+		
 		//Constructor for terrain
 		public GameTerrain(int xGrid, int zGrid, ObjectLoader objectLoader, GameTerrainTexture_Collection gameTerrainTexture_Collection, GameTerrainTexture blendMap, String heightMap){
 			this.blendMap = blendMap;
@@ -40,12 +44,17 @@ public class GameTerrain {
 			BufferedImage img = null;
 			try {
 				img = ImageIO.read(new File("res/" + heightMap+ ".png"));
+				if(img.getWidth() != img.getHeight()){
+					System.out.println("File " + heightMap + ".png is not an nxn image!");
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			//Set the vertex count based on height map
 			int TERRAIN_VERTEX_COUNT = img.getHeight();
+			//Set tableOfHeight based on TERRAIN_VERTEX_COUNT
+			tableOfHeight = new float[TERRAIN_VERTEX_COUNT][TERRAIN_VERTEX_COUNT];
 			//Square the terrain vertex count, to obtain the dimensions of the terrain
 			int vertexCount = TERRAIN_VERTEX_COUNT * TERRAIN_VERTEX_COUNT;
 			//Create a float array of 3D vertices
@@ -64,7 +73,9 @@ public class GameTerrain {
 				for(int j=0;j<TERRAIN_VERTEX_COUNT;j++){
 					//Create three verticies to form a triangle
 					arrayOfVertices[pointerToVertex*3] = (float)j/((float)TERRAIN_VERTEX_COUNT - 1) * TERRAIN_SIZE;
-					arrayOfVertices[pointerToVertex*3+1] = getHeight(j, i, img);
+					float heightAtVertex = getHeight(j, i, img);
+					tableOfHeight[j][i] = heightAtVertex;
+					arrayOfVertices[pointerToVertex*3+1] = heightAtVertex;
 					arrayOfVertices[pointerToVertex*3+2] = (float)i/((float)TERRAIN_VERTEX_COUNT - 1) * TERRAIN_SIZE;
 					//Create three normal vectors with lighting effects
 					Vector3f normalVector = handleNormal(j, i, img);
@@ -137,6 +148,42 @@ public class GameTerrain {
 
 		public void setBlendMap(GameTerrainTexture blendMap) {
 			this.blendMap = blendMap;
+		}
+		//This method is used to determine the tile height
+		public float calculateTerrainHeight(float x, float z){
+			//Calculate the x position relative to map
+			float xPos = x - this.x;
+			//Calculate the z position relative to map
+			float zPos = z - this.z;
+			//Calculate the size of each tile based on the terrainsize and number of height points
+			float tileSize = TERRAIN_SIZE / ((float)tableOfHeight.length - 1);
+			//Calculate the x side of each tile
+			int xTile = (int) Math.floor(xPos/tileSize);
+			//Calculate the z side of each tile
+			int zTile = (int) Math.floor(zPos/tileSize);
+			//Check to see if position is out of bounds
+			if(xTile >= tableOfHeight.length - 1 || zTile >= tableOfHeight.length - 1 ||xTile < 0 || zTile < 0){
+				return 0;
+			}
+			//Determine user's x position relative to map
+			float xUser = (xPos % tileSize)/tileSize;
+			//Determine user's z position relative to map
+			float zUser = (zPos % tileSize)/tileSize;
+			float result;
+			//Consider each tile to be representative of a square
+			//This function now checks which half of the square the user is in
+			//Check if user is in bottom right corner, or upper left corner
+			if(xUser <= 1-zUser){
+				//This is is complicated, so let me explain
+				//This is performing Barry Centric interpolation (a method of determining the height at any given point on a triangulated area)
+				//The function takes the height at the upper left point, followed by the bottom left point, followed by the upper right point
+				//Then it takes the position of the user, and calculates the height of the terrain at the point of the user
+				result = MathFuncs.barryCentric(new Vector3f(0, tableOfHeight[xTile][zTile], 0), new Vector3f(1, tableOfHeight[xTile+1][zTile], 0), new Vector3f(0, tableOfHeight[xTile][zTile+1], 1), new Vector2f(xUser, zUser));
+			}else{
+				//This calculates the height for the other half of the triangle
+				result = MathFuncs.barryCentric(new Vector3f(1, tableOfHeight[xTile+1][zTile], 0), new Vector3f(1, tableOfHeight[xTile+1][zTile+1], 1), new Vector3f(0, tableOfHeight[xTile][zTile+1], 1), new Vector2f(xUser, zUser));
+			}
+			return result;
 		}
 
 		//This function handles getting height

@@ -50,6 +50,9 @@ public class ObjectLoader {
 		//Attempt to load texture from res folder
 		try{
 		texture = TextureLoader.getTexture("PNG", new FileInputStream("res/"+fileName+".png"));
+		if(texture.getWidth() != texture.getHeight()){
+			System.out.println("File " + fileName + ".png is not an nxn image!");
+		}
 		//Implement smooth mip mapping for distance objects
 		GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);

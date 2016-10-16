@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import gameEngineRenderingPackage.GameDisplay;
 import gameModelPackage.TexturedModel;
+import gameTerrainPackage.GameTerrain;
 
 public class GameUser extends GameEntity{
 
@@ -34,7 +35,7 @@ public class GameUser extends GameEntity{
 		}
 	}
 	//This method handle's manipulation of the game entity position/rotation based on user input
-	public void moveUser(){
+	public void moveUser(GameTerrain gameTerrain){
 		//Get inputs from keyboard
 		registerInputs();
 		//Rotate user's entity
@@ -51,10 +52,12 @@ public class GameUser extends GameEntity{
 		ascendingSpeed += g * GameDisplay.getPreviousFrameRenderDuration();
 		//Calculate vertical movement
 		super.moveEntityPosition(0, ascendingSpeed * GameDisplay.getPreviousFrameRenderDuration(), 0);
+		//Calculate the height of the terrain at user position
+		float heightOfTerrain = gameTerrain.calculateTerrainHeight(super.getGameEntityPosition().x, super.getGameEntityPosition().z);
 		//Check if below map
-		if(super.getGameEntityPosition().y<heightOfMap){
+		if(super.getGameEntityPosition().y < heightOfTerrain){
 			ascendingSpeed = 0;
-			super.getGameEntityPosition().y = heightOfMap;
+			super.getGameEntityPosition().y = heightOfTerrain;
 			flying = false;
 		}
 	}
