@@ -16,8 +16,8 @@ out vec4 out_Color;
 //Uniform variables for multi texturing
 uniform sampler2D backgroundTexture;
 uniform sampler2D redTexture;
-uniform sampler2D blueTexture;
 uniform sampler2D greenTexture;
+uniform sampler2D blueTexture;
 uniform sampler2D blendMap;
 
 //This vector handles the lighting color
@@ -36,17 +36,17 @@ void main(void){
 	//Get the blended color
 	vec4 blendedColor = texture(blendMap, pass_placementTexture);
 	//The strength of the background color
-	float backgroundTextureStrength = 1 - (blendedColor.r + blendedColor.b + blendedColor.g);
+	float backgroundTextureStrength = 1 - (blendedColor.r + blendedColor.g + blendedColor.b);
 	//Calculate the location of the tile 
 	vec2 tilePlacement = pass_placementTexture * 40.0;
 	//Calculate background tiles
 	vec4 textureOfBackground = texture(backgroundTexture, tilePlacement) * backgroundTextureStrength;
 	//Calculate the red texture
 	vec4 textureOfRed = texture(redTexture, tilePlacement) * blendedColor.r;
-	//Calculate the blue texture
-	vec4 textureOfBlue = texture(blueTexture, tilePlacement) * blendedColor.b;
 	//Calculate the green texture
 	vec4 textureOfGreen = texture(greenTexture, tilePlacement) * blendedColor.g;
+	//Calculate the blue texture
+	vec4 textureOfBlue = texture(blueTexture, tilePlacement) * blendedColor.b;
 	
 	//Calculate all colors
 	vec4 allColors = textureOfBackground + textureOfRed + textureOfBlue + textureOfGreen;

@@ -18,6 +18,7 @@ import gameEngineRenderingPackage.ObjectLoader;
 import gameEngineRenderingPackage.EntityRenderingClass;
 import gameEntitiesPackage.GameEntity;
 import gameEntitiesPackage.GameLighting;
+import gameEntitiesPackage.GameUser;
 import gameEntitiesPackage.GameView;
 import gameModelPackage.UntexturedModel;
 import gameShadersPackage.StaticShader;
@@ -38,13 +39,13 @@ public class BasicGame {
 		MasterRenderingClass primaryRenderer = new MasterRenderingClass();
 		
 		//Terrains
-		GameTerrainTexture backgroundTexture = new GameTerrainTexture(modelLoader.loadTexture("Dark_Rock"));
+		GameTerrainTexture backgroundTexture = new GameTerrainTexture(modelLoader.loadTexture("Yellow"));
 		GameTerrainTexture redTexture = new GameTerrainTexture(modelLoader.loadTexture("Red_Rock"));
-		GameTerrainTexture blueTexture = new GameTerrainTexture(modelLoader.loadTexture("Purple_Rock"));
-		GameTerrainTexture greenTexture = new GameTerrainTexture(modelLoader.loadTexture("Pink_Rock"));
+		GameTerrainTexture blueTexture = new GameTerrainTexture(modelLoader.loadTexture("Pink_Rock"));
+		GameTerrainTexture greenTexture = new GameTerrainTexture(modelLoader.loadTexture("Dark_Rock"));
 		
 		GameTerrainTexture_Collection gameTerrainTexture_Collection = new GameTerrainTexture_Collection(backgroundTexture, redTexture, blueTexture, greenTexture);
-		GameTerrainTexture blendMap = new GameTerrainTexture(modelLoader.loadTexture("blendmap"));
+		GameTerrainTexture blendMap = new GameTerrainTexture(modelLoader.loadTexture("BlendMap"));
 		
 		
 		int i = 0;
@@ -52,11 +53,12 @@ public class BasicGame {
 		int k = 0;
 		GameEntity[] entityList = new GameEntity[3];
 		GameEntity[] secondaryEntityList = new GameEntity[9];
-		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, 0, 0, 0, 1, 10, 1);
-		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, 0, 0, 0, 0, 1, 10, 1);
-		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, 0, 0, 0, 0, 1, 10, 1);
-		GameTerrain terrain = new GameTerrain(-1, -1, modelLoader, gameTerrainTexture_Collection, blendMap);
-		GameTerrain terrain2 = new GameTerrain(-1, -1, modelLoader, gameTerrainTexture_Collection, blendMap);
+		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, -10, 0, 0, 1, 10, 1);
+		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, -10, 0, 0, 0, 1, 10, 1);
+		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, -10, 0, 0, 0, 1, 10, 1);
+		GameUser user = new GameUser(entityList[2].getGameEntityModel(), new Vector3f(100, 1, -50), 0, 180, 0, 0.6f);
+		GameTerrain terrain = new GameTerrain(0, -1, modelLoader, gameTerrainTexture_Collection, blendMap, "HM");
+		GameTerrain terrain2 = new GameTerrain(-1, -1, modelLoader, gameTerrainTexture_Collection, blendMap, "HM");
 		GameEntity currentEntity = entityList[0];
         Result result = JUnitCore.runClasses(EngineTester.class);
         
@@ -64,11 +66,15 @@ public class BasicGame {
             System.out.println(failure.toString());
         }
 		//Creates the GameView for player vision
-		GameView gameView = new GameView();
+		GameView gameView = new GameView(user);
+		gameView.setGameViewPosition(new Vector3f(user.getGameEntityPosition().x, user.getGameEntityPosition().y+10, user.getGameEntityPosition().z-20));
+		gameView.setGameViewYaw(0);
+//		gameView.setGameViewPosition(new Vector3f(0, 0, -50));
 		//Create a light source
-		GameLighting gameLight = new GameLighting(new Vector3f(0, 10, -1), new Vector3f(1, 1, 1));
+		GameLighting gameLight = new GameLighting(new Vector3f(100, 100, 10), new Vector3f(0.6f, 0.5f, 0.5f));
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
+			user.moveUser();
 			while (Keyboard.next()) {
 			    if (Keyboard.getEventKeyState()) {
 			        switch (Keyboard.getEventKey()) {
@@ -94,6 +100,7 @@ public class BasicGame {
 			primaryRenderer.handleGameEntity(entityList[0]);
 			primaryRenderer.handleGameEntity(entityList[1]);
 			primaryRenderer.handleGameEntity(entityList[2]);
+			primaryRenderer.handleGameEntity(user);
 			while(k < g){
 				secondaryEntityList[k].moveEntityPosition(.01f, 0.01f, -0.001f);
 				secondaryEntityList[k].changeEntityRotation(0, 0.3f, 0.3f);

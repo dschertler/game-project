@@ -1,5 +1,14 @@
 package gameTerrainPackage;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+
+import org.lwjgl.util.vector.Vector3f;
+
 import gameEngineRenderingPackage.ObjectLoader;
 import gameModelPackage.UntexturedModel;
 import gameTexturesPackage.GameModelTexture;
@@ -7,7 +16,8 @@ import gameTexturesPackage.GameModelTexture;
 public class GameTerrain {
 
 		private static final float TERRAIN_SIZE = 800;
-		private static final int TERRAIN_VERTEX_COUNT = 128;
+		private static final float HEIGHT_MAXIMUM = 50;
+		private static final float PIXEL_COLOR_MAXIMUM = 256 * 256 * 256;
 		
 		private float x;
 		private float z;
@@ -16,16 +26,26 @@ public class GameTerrain {
 		private GameTerrainTexture blendMap;
 		
 		//Constructor for terrain
-		public GameTerrain(int xGrid, int zGrid, ObjectLoader objectLoader, GameTerrainTexture_Collection gameTerrainTexture_Collection, GameTerrainTexture blendMap){
+		public GameTerrain(int xGrid, int zGrid, ObjectLoader objectLoader, GameTerrainTexture_Collection gameTerrainTexture_Collection, GameTerrainTexture blendMap, String heightMap){
 			this.blendMap = blendMap;
 			this.gameTerrainTexture_Collection = gameTerrainTexture_Collection;
 			this.x = TERRAIN_SIZE * xGrid;
 			this.z = TERRAIN_SIZE * zGrid;
-			this.untexturedModel = createGameTerrain(objectLoader);
+			this.untexturedModel = createGameTerrain(objectLoader, heightMap);
 		}
 		
 		//This creates a large untextured object, based on the TERRAIN_VERTEX_COUNT
-		private UntexturedModel createGameTerrain(ObjectLoader objectLoader){
+		private UntexturedModel createGameTerrain(ObjectLoader objectLoader, String heightMap){
+			//Take in terrain height map
+			BufferedImage img = null;
+			try {
+				img = ImageIO.read(new File("res/" + heightMap+ ".png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//Set the vertex count based on height map
+			int TERRAIN_VERTEX_COUNT = img.getHeight();
 			//Square the terrain vertex count, to obtain the dimensions of the terrain
 			int vertexCount = TERRAIN_VERTEX_COUNT * TERRAIN_VERTEX_COUNT;
 			//Create a float array of 3D vertices
@@ -44,12 +64,13 @@ public class GameTerrain {
 				for(int j=0;j<TERRAIN_VERTEX_COUNT;j++){
 					//Create three verticies to form a triangle
 					arrayOfVertices[pointerToVertex*3] = (float)j/((float)TERRAIN_VERTEX_COUNT - 1) * TERRAIN_SIZE;
-					arrayOfVertices[pointerToVertex*3+1] = 0;
+					arrayOfVertices[pointerToVertex*3+1] = getHeight(j, i, img);
 					arrayOfVertices[pointerToVertex*3+2] = (float)i/((float)TERRAIN_VERTEX_COUNT - 1) * TERRAIN_SIZE;
-					//Create three normal vectors 
-					arrayOfNormals[pointerToVertex*3] = 0;
-					arrayOfNormals[pointerToVertex*3+1] = 1;
-					arrayOfNormals[pointerToVertex*3+2] = 0;
+					//Create three normal vectors with lighting effects
+					Vector3f normalVector = handleNormal(j, i, img);
+					arrayOfNormals[pointerToVertex*3] = normalVector.x;
+					arrayOfNormals[pointerToVertex*3+1] = normalVector.y;
+					arrayOfNormals[pointerToVertex*3+2] = normalVector.z;
 					//Create two texture coordinates, which are associated with the shape
 					arrayOfTextureCoordinates[pointerToVertex*2] = (float)j/((float)TERRAIN_VERTEX_COUNT - 1);
 					arrayOfTextureCoordinates[pointerToVertex*2+1] = (float)i/((float)TERRAIN_VERTEX_COUNT - 1);
@@ -118,4 +139,25 @@ public class GameTerrain {
 			this.blendMap = blendMap;
 		}
 
+		//This function handles getting height
+		private float getHeight(int x, int y, BufferedImage img){
+			if(x < 0 || x >= img.getHeight() || y < 0 || y >= img.getHeight()){
+				return 0;
+			}
+			float terrainHeight = img.getRGB(x, y);
+			terrainHeight += PIXEL_COLOR_MAXIMUM/2f;
+			terrainHeight /= PIXEL_COLOR_MAXIMUM/2f;
+			terrainHeight *= HEIGHT_MAXIMUM;
+			return terrainHeight;
+		}
+		//This handles the normal vectors
+		private Vector3f handleNormal(int x, int y, BufferedImage img){
+			float leftHeight = getHeight(x-1, y, img);
+			float rightHeight = getHeight(x+1, y, img);
+			float downHeight = getHeight(x, y-1, img);
+			float upHeight = getHeight(x, y+1, img);
+			Vector3f normalVector = new Vector3f(leftHeight - rightHeight, 2f, downHeight - upHeight);
+			normalVector.normalise();
+			return normalVector;
+		}
 }

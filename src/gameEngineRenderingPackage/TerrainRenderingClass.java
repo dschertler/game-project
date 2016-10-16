@@ -68,11 +68,14 @@ public class TerrainRenderingClass {
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrainTexture_Collection.getRedTexture().getTextureReferenceID());
 		//Activate and attach the blue texture to the 3rd unit
-		GL13.glActiveTexture(GL13.GL_TEXTURE3);
+		GL13.glActiveTexture(GL13.GL_TEXTURE2);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrainTexture_Collection.getBlueTexture().getTextureReferenceID());
 		//Activate and attach the green texture to the 4th unit
-		GL13.glActiveTexture(GL13.GL_TEXTURE4);
+		GL13.glActiveTexture(GL13.GL_TEXTURE3);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrainTexture_Collection.getGreenTexture().getTextureReferenceID());
+		//Activate and attach the blendmap to the 5th unit
+		GL13.glActiveTexture(GL13.GL_TEXTURE4);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, gameTerrain.getBlendMap().getTextureReferenceID());
 		
 	}
 	
