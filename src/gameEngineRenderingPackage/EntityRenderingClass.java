@@ -54,6 +54,8 @@ public class EntityRenderingClass {
 		GL20.glEnableVertexAttribArray(2);
 		//Load up the light properties
 		GameModelTexture texture = texturedModel.getTexture();
+		//Load up the rows from texture atlas
+		shader.loadRowNum(texture.getAtlasNumRows());
 		//Check object for transparency
 		if(texture.isTransparent()){
 			MasterRenderingClass.unInitiateBackFaceCulling();
@@ -85,6 +87,8 @@ public class EntityRenderingClass {
 		Matrix4f transformationMatrix = MathFuncs.initializeTransformingMatrix(gameEntity.getGameEntityPosition(), gameEntity.getGameEntityRotationX(), gameEntity.getGameEntityRotationY(), gameEntity.getGameEntityRotationZ(), gameEntity.getGameEntityScale());
 		//Load up the transformation matrix
 		shader.loadTransformationMatrix(transformationMatrix);
+		//Find the specific texture from texture atlas
+		shader.loadOffset(gameEntity.calculateOffsetOfX(), gameEntity.calculateOffsetOfY());
 	}
 	
 	public EntityRenderingClass(StaticShader shader, Matrix4f projectionMatrix){

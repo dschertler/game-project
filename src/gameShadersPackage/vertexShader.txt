@@ -26,6 +26,11 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 //The uniform float to determine false lighting
 uniform float implementFalseLighting;
+//The uniform float to hold the texture atlas row num
+uniform float rowNum;
+//The vector to hold the offset of desired texture from texture atlas
+uniform vec2 offset;
+
 //The density of the fog
 const float fogDensity = 0.005;
 //The gradient of the fog
@@ -39,7 +44,7 @@ void main (void){
 	//Set the render position given its matrix transformation, view matrix, and projection matrix
 	gl_Position = projectionMatrix * distanceFromCamera;
 	//Calculate texture based on placement and coords
-	pass_placementTexture = placementTexture;
+	pass_placementTexture = (placementTexture/rowNum) + offset;
 	//Checks if object uses false lighting, and redirects normal vector if it does
 	vec3 trueNormalVector = normalVector;
 	if(implementFalseLighting > 0.5){

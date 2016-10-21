@@ -155,4 +155,14 @@ public class ObjectLoader {
 	private void unbindVertexArrayObject(){
 		GL30.glBindVertexArray(0);
 	}
+	//Loads in GUI quads
+	public UntexturedModel loadIntoVertexArrayObject(float[] positions){
+		//Create a vertex array object
+		int vertexArrayObjectReferenceID = initializeVertexArrayObject();
+		//Give it an x,y coordinate based on positions
+		this.addDataToAttributeList(0, 2, positions);
+		unbindVertexArrayObject();
+		//Return untextured model
+		return new UntexturedModel(vertexArrayObjectReferenceID, positions.length/2);
+	}
 }

@@ -7,6 +7,20 @@ import org.lwjgl.util.vector.Vector3f;
 import gameEntitiesPackage.GameView;
 //This is the MathFuncs class which handles the math functions of the engine
 public class MathFuncs {
+	
+	//This method handles the creation of transformation matricies
+	public static Matrix4f initializeTransformationMatrix(Vector2f change, Vector2f size){
+		//Create the matrix
+		Matrix4f transMat = new Matrix4f();
+		//Set it to the identy matrix
+		transMat.setIdentity();
+		//Apply changes to matrix
+		Matrix4f.translate(change, transMat, transMat);
+		//Apply new size
+		Matrix4f.scale(new Vector3f(size.x, size.y, 1f), transMat, transMat);
+		return transMat;
+	}
+	
 	//This createViewMatrix function is used to create the matrix which adds the illusion of an in game camera
 	public static Matrix4f initializeGameViewMatrix(GameView gameView){
 		//Create the gameViewMatrix

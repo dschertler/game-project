@@ -12,6 +12,8 @@ public class GameEntity {
 	private float gameEntityRotationX, gameEntityRotationY, gameEntityRotationZ;
 	private float gameEntityScale;
 	
+	private int indexOfTexture = 0;
+	
 	//A constructor for entity
 	public GameEntity(TexturedModel gameEntityModel, Vector3f gameEntityPosition, float gameEntityRotationX, float gameEntityRotationY, float gameEntityRotationZ, float gameEntityScale) {
 		super();
@@ -22,6 +24,17 @@ public class GameEntity {
 		this.gameEntityRotationZ = gameEntityRotationZ;
 		this.gameEntityScale = gameEntityScale;
 	}
+	//A constructor for entity with texture atlas
+		public GameEntity(TexturedModel gameEntityModel, int indexOfTexture, Vector3f gameEntityPosition, float gameEntityRotationX, float gameEntityRotationY, float gameEntityRotationZ, float gameEntityScale) {
+			super();
+			this.indexOfTexture = indexOfTexture;
+			this.gameEntityModel = gameEntityModel;
+			this.gameEntityPosition = gameEntityPosition;
+			this.gameEntityRotationX = gameEntityRotationX;
+			this.gameEntityRotationY = gameEntityRotationY;
+			this.gameEntityRotationZ = gameEntityRotationZ;
+			this.gameEntityScale = gameEntityScale;
+		}
 	//This is the changeEntityScale function. It takes the amount provided, and alters the scale of the entity
 	public void changeEntityScale(float addScale){
 		if(this.gameEntityScale+addScale > 0)
@@ -77,5 +90,14 @@ public class GameEntity {
 	public void setGameEntityScale(float gameEntityScale) {
 		this.gameEntityScale = gameEntityScale;
 	}
-	
+	//Calculate the x offset from the upper left corner of the texture atlas
+	public float calculateOffsetOfX(){
+		int col = indexOfTexture % gameEntityModel.getTexture().getAtlasNumRows();
+		return (float)col/(float)gameEntityModel.getTexture().getAtlasNumRows();
+	}
+	//Calculate the y offset from the upper left corner of the texture atlas
+	public float calculateOffsetOfY(){
+		int row = indexOfTexture/gameEntityModel.getTexture().getAtlasNumRows();
+		return (float)row/(float)gameEntityModel.getTexture().getAtlasNumRows();
+	}
 }

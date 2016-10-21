@@ -8,6 +8,14 @@ public class GameModelTexture {
 	private boolean isTransparent = false;
 	private boolean implementsFalseLighting = false;
 	
+	private int atlasNumRows = 1;
+	
+	public int getAtlasNumRows() {
+		return atlasNumRows;
+	}
+	public void setAtlasNumRows(int atlasNumRows) {
+		this.atlasNumRows = atlasNumRows;
+	}
 	public boolean isImplementsFalseLighting() {
 		return implementsFalseLighting;
 	}

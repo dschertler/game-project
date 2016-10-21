@@ -9,8 +9,11 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import basicGUI.BasicRendererGUI;
+import basicGUI.TextureGUI;
 import gameEngineRenderingPackage.GameDisplay;
 import gameEngineRenderingPackage.MasterRenderingClass;
 import gameEngineRenderingPackage.OBJ_FileHandler;
@@ -38,7 +41,14 @@ public class BasicGame {
 		//Creates the primaryRenderer for rendering all objects
 		MasterRenderingClass primaryRenderer = new MasterRenderingClass();
 		
-		//Terrains
+		//GUI Stuff
+		List<TextureGUI> listOfGUIs = new ArrayList<TextureGUI>();
+		TextureGUI textureGUI = new TextureGUI(modelLoader.loadTexture("haruhi"), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		listOfGUIs.add(textureGUI);
+		
+		BasicRendererGUI basicRendererGUI = new BasicRendererGUI(modelLoader);
+		
+		//Terrain
 		GameTerrainTexture backgroundTexture = new GameTerrainTexture(modelLoader.loadTexture("Yellow"));
 		GameTerrainTexture redTexture = new GameTerrainTexture(modelLoader.loadTexture("Red_Rock"));
 		GameTerrainTexture blueTexture = new GameTerrainTexture(modelLoader.loadTexture("Pink_Rock"));
@@ -112,9 +122,12 @@ public class BasicGame {
 			k = 0;
 			gameView.moveGameView();
 			primaryRenderer.renderEntity(gameLight, gameView);
+			basicRendererGUI.guiRender(listOfGUIs);
 			//Update display
 			GameDisplay.displayRefresh();
 		}
+		//Remove the gui
+		basicRendererGUI.removeLeftOverShaders();
 		//Delete leftover game shaders
 		primaryRenderer.removeLeftOverShaders();
 		//Delete all VAOs & VAOs
