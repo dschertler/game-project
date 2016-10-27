@@ -11,13 +11,13 @@ out vec2 pass_placementTexture;
 //Output the object's normal surface pointing off a given object
 out vec3 normalSurface;
 //Output the object's vector pointing to the light source
-out vec3 lightSourceVector;
+out vec3 lightSourceVector[5];
 //Output the vector to the camera
 out vec3 vectorTowardsCamera;
 //Output the visability based on fog
 out float fogVisibility;
 //This uniform vector handles the light position
-uniform vec3 lPosition;
+uniform vec3 lPosition[5];
 //The uniform matrix which handles vertex transformations
 uniform mat4 transformationMatrix;
 //The uniform matrix that handles projections to give the illusion of 3 dimensional space
@@ -41,7 +41,9 @@ void main (void){
 	//Find the vertex's normal (the one that points directly out of vector)
 	normalSurface = (transformationMatrix * vec4(normalVector, 0.0)).xyz;
 	//Find the vertex's lightSourceVector (the one which points towards the light source)
-	lightSourceVector = lPosition - globalPosition.xyz;
+	for(int i = 0; i < 5; i++){
+	lightSourceVector[i] = lPosition[i] - globalPosition.xyz;
+	}
 	//Find the vector which is pointing towards the camera
 	vectorTowardsCamera = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - globalPosition.xyz; 
 	//Get the distance

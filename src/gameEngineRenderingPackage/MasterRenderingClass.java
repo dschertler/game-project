@@ -35,7 +35,7 @@ public class MasterRenderingClass {
 		//Hashmap of texture model keys
 		private Map<TexturedModel, List<GameEntity>> entitiesMap = new HashMap<TexturedModel, List<GameEntity>>();
 		//renderEntity renders the entity with appropriate lighting
-		public void renderEntity(GameLighting brightSource, GameView cam){
+		public void renderEntity(List<GameLighting> brightSources, GameView cam){
 			//Before rendering prepare the renderer
 			beforeRender();
 			//Begin shading entity
@@ -43,7 +43,7 @@ public class MasterRenderingClass {
 			//Implement skycolor with fog
 			shader.loadSkyColor(R, G, B);
 			//Shade in basic lighting
-			shader.loadLightVector(brightSource);
+			shader.loadLightVectors(brightSources);
 			//Load up the camera
 			shader.loadViewMatrix(cam);
 			//Render game entities
@@ -53,7 +53,7 @@ public class MasterRenderingClass {
 			//Same thing but for the terrain
 			terrainShader.beginShading();
 			terrainShader.loadSkyColor(R, G, B);
-			terrainShader.loadLightVector(brightSource);
+			terrainShader.loadLightVectors(brightSources);
 			terrainShader.loadViewMatrix(cam);
 			terrainRenderer.renderTerrains(gameTerrains);
 			terrainShader.endShading();

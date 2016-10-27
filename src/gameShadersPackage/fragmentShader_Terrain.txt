@@ -5,7 +5,7 @@ in vec2 pass_placementTexture;
 //Input the normal vector
 in vec3 normalSurface;
 //Input the light source vector
-in vec3 lightSourceVector;
+in vec3 lightSourceVector[5];
 //Input the vector pointing towards the game view
 in vec3 vectorTowardsCamera;
 //Input the fogVisibility
@@ -21,7 +21,7 @@ uniform sampler2D blueTexture;
 uniform sampler2D blendMap;
 
 //This vector handles the lighting color
-uniform vec3 lColor;
+uniform vec3 lColor[5];
 //This is for storing data about the texture sampling
 uniform sampler2D textureSampler;
 //This is for storing the camera proximity to shine vector
@@ -32,6 +32,11 @@ uniform float shine;
 uniform vec3 colorOfSky;
 
 void main(void){
+
+	//All light diffuse
+	vec3 sumDiffuse = vec3(0.0);
+	//All light shine
+	vec3 sumShine = vec3(0.0);
 
 	//Get the blended color
 	vec4 blendedColor = texture(blendMap, pass_placementTexture);
@@ -52,14 +57,15 @@ void main(void){
 	vec4 allColors = textureOfBackground + textureOfRed + textureOfBlue + textureOfGreen;
 	//Makes the size of the surface normal equal one
 	vec3 itemNorm = normalize(normalSurface);
+	for(int i = 0; i < 5; i++){
 	//Makes the size of the light vector equal one
-	vec3 itemLightSourceVector = normalize(lightSourceVector);
+	vec3 itemLightSourceVector = normalize(lightSourceVector[i]);
 	//Find the dot product
 	float nDot1 = dot(itemNorm, itemLightSourceVector);
 	//Calculate brightness
 	float brightness = max(nDot1, 0.0);
 	//Calculate diffuse
-	vec3 diffuse = brightness * lColor;
+	sumDiffuse += brightness * lColor[i];
 	//Normalize the vector to one
 	vec3 vectorTowardsCameraNorm = normalize(vectorTowardsCamera);
 	//Find the inverse of the light vector
@@ -69,13 +75,16 @@ void main(void){
 	//Find the strength of the shine
 	float shineStrength = dot(shineyLightVector, vectorTowardsCameraNorm); 
 	//Ensure positive brightness adjust second value for ambient light
-	shineStrength = max(shineStrength, 0.1);
+	shineStrength = max(shineStrength, 0.0);
 	//Apply dampening to lighting
 	float shineDampening = pow(shineStrength, cameraProximityToShine);
 	//Ensure proper light color
-	vec3 finalShine = shineDampening * lColor;
+	sumShine += shineDampening * lColor[i];
+	}
+	//Handle Ambient
+	sumDiffuse = max(sumDiffuse, 0.1);
 	//Output the texture mapped to the proper coordinates and proper lighting
-	out_Color = vec4(diffuse, 1.0) * allColors + vec4(finalShine, 1.0);
+	out_Color = vec4(sumDiffuse, 1.0) * allColors + vec4(sumShine, 1.0);
 	//Output the visibility of the object
 	out_Color = mix(vec4(colorOfSky,1.0), out_Color, fogVisibility);
 }

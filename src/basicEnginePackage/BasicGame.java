@@ -43,7 +43,7 @@ public class BasicGame {
 		
 		//GUI Stuff
 		List<TextureGUI> listOfGUIs = new ArrayList<TextureGUI>();
-		TextureGUI textureGUI = new TextureGUI(modelLoader.loadTexture("haruhi"), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		TextureGUI textureGUI = new TextureGUI(modelLoader.loadTexture("meow"), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
 		listOfGUIs.add(textureGUI);
 		
 		BasicRendererGUI basicRendererGUI = new BasicRendererGUI(modelLoader);
@@ -61,12 +61,13 @@ public class BasicGame {
 		int i = 0;
 		int g = 0;
 		int k = 0;
-		GameEntity[] entityList = new GameEntity[3];
+		GameEntity[] entityList = new GameEntity[4];
 		GameEntity[] secondaryEntityList = new GameEntity[9];
-		entityList[0] = makeGameEntity(modelLoader,"meow", 0, 0, 0, -10, 0, 0, 1, 10, 1);
-		entityList[1] = makeGameEntity(modelLoader, "haruhi", 0, 0, -10, 0, 0, 0, 1, 10, 1);
-		entityList[2] = makeGameEntity(modelLoader, "thingPNG", 0, 0, -10, 0, 0, 0, 1, 10, 1);
-		GameUser user = new GameUser(entityList[2].getGameEntityModel(), new Vector3f(100, 1, -50), 0, 180, 0, 0.6f);
+		entityList[0] = makeGameEntity(modelLoader, "thing", "meow", 0, 0, 0, -10, 0, 0, 1, 10, 1);
+		entityList[1] = makeGameEntity(modelLoader, "thing", "haruhi", 0, 0, -10, 0, 0, 0, 1, 10, 1);
+		entityList[2] = makeGameEntity(modelLoader, "thing", "thingPNG", 0, 0, -10, 0, 0, 0, 1, 10, 1);
+		entityList[3] = makeGameEntity(modelLoader, "crystal", "crystal1", 100, 1, -50, 0, 0, 0, 1, 10, 1);
+		GameUser user = new GameUser(entityList[3].getGameEntityModel(), new Vector3f(100, 1, -50), 0, 180, 0, 0.6f);
 		GameTerrain terrain = new GameTerrain(0, -1, modelLoader, gameTerrainTexture_Collection, blendMap, "HM");
 		GameTerrain terrain2 = new GameTerrain(-1, -1, modelLoader, gameTerrainTexture_Collection, blendMap, "HM");
 		GameEntity currentEntity = entityList[0];
@@ -81,7 +82,9 @@ public class BasicGame {
 		gameView.setGameViewYaw(0);
 //		gameView.setGameViewPosition(new Vector3f(0, 0, -50));
 		//Create a light source
+		List<GameLighting> gameLights = new ArrayList<GameLighting>();
 		GameLighting gameLight = new GameLighting(new Vector3f(100, 100, 10), new Vector3f(0.6f, 0.5f, 0.5f));
+		gameLights.add(gameLight);
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
 			user.moveUser(terrain);
@@ -96,7 +99,7 @@ public class BasicGame {
 			            	if(i == entityList.length) i = 0;
 			            	break;
 			            case Keyboard.KEY_G:
-			            	secondaryEntityList[g] = makeGameEntity(modelLoader, "haruhi", 0, 0, -100, 0, 0, 0, 0.5f, 10, 1);
+			            	secondaryEntityList[g] = makeGameEntity(modelLoader, "thing", "haruhi", 0, 0, -100, 0, 0, 0, 0.5f, 10, 1);
 			            	g = g+1;
 			            	if(g == secondaryEntityList.length) g = 0;
 			            	break;
@@ -112,6 +115,7 @@ public class BasicGame {
 			primaryRenderer.handleGameEntity(entityList[0]);
 			primaryRenderer.handleGameEntity(entityList[1]);
 			primaryRenderer.handleGameEntity(entityList[2]);
+			primaryRenderer.handleGameEntity(entityList[3]);
 			primaryRenderer.handleGameEntity(user);
 			while(k < g){
 				secondaryEntityList[k].moveEntityPosition(.01f, 0.01f, -0.001f);
@@ -121,7 +125,7 @@ public class BasicGame {
 			}
 			k = 0;
 			gameView.moveGameView();
-			primaryRenderer.renderEntity(gameLight, gameView);
+			primaryRenderer.renderEntity(gameLights, gameView);
 			basicRendererGUI.guiRender(listOfGUIs);
 			//Update display
 			GameDisplay.displayRefresh();
@@ -135,9 +139,9 @@ public class BasicGame {
 		//Close the application
 		GameDisplay.displayClose();
 	}
-	public static GameEntity makeGameEntity(ObjectLoader modelLoader, String fileName, float xpos, float ypos, float zpos, float xrot, float yrot, float zrot, float scale, float cameraProximityToShine, float shine){
+	public static GameEntity makeGameEntity(ObjectLoader modelLoader,String fn, String fileName, float xpos, float ypos, float zpos, float xrot, float yrot, float zrot, float scale, float cameraProximityToShine, float shine){
 		//Load 3D model into UntexturedModel type model
-		UntexturedModel untexturedModel = OBJ_FileHandler.loadObjModel("thing", modelLoader);
+		UntexturedModel untexturedModel = OBJ_FileHandler.loadObjModel(fn, modelLoader);
 		//Load texture defined by name from res into GameModelTexture as a texture
 		GameModelTexture textureForModel = new GameModelTexture(modelLoader.loadTexture(fileName));
 		//Combine the UntexturedModel and the GameModelTexture just loaded to form a TexturedModel
