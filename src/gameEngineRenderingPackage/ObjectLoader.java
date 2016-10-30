@@ -3,6 +3,7 @@ package gameEngineRenderingPackage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -17,7 +20,10 @@ import org.lwjgl.opengl.GL30;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
+import de.matthiasmann.twl.utils.PNGDecoder;
+import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import gameModelPackage.UntexturedModel;
+import gameTexturesPackage.GameModelTextureData;
 //This is the ObjectLoader Class, it uses information about the model to generate a 3D model
 public class ObjectLoader {
 
@@ -151,18 +157,66 @@ public class ObjectLoader {
 		//Stores the buffer in the VBO
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 	}
+	//Loads an image into a byte buffer
+	private GameModelTextureData loadToByteBuffer(String fileName){
+		int w = 0;
+		int h = 0;
+		ByteBuffer byteBuffer = null;
+		//Try to load image into byte buffer
+		try{
+			//Load in the file stream
+			FileInputStream input = new FileInputStream(fileName);
+			//Use the png decoder
+			PNGDecoder pngDecoder = new PNGDecoder(input);
+			//Get the height and width from the image, and load into byte buffer
+			w = pngDecoder.getWidth();
+			h = pngDecoder.getHeight();
+			byteBuffer = ByteBuffer.allocateDirect(4 * w * h);
+			pngDecoder.decode(byteBuffer, w * 4, Format.RGBA);
+			//Flip the byte buffer and close the input stream
+			byteBuffer.flip();
+			input.close();
+		} catch (Exception e){
+			e.printStackTrace();
+			System.err.println("Attempted texture load " + fileName + " failed");
+			System.exit(-1);
+		}
+		return new GameModelTextureData(byteBuffer, w, h);
+	}
+	//Converts to cube map the textures will load Right Face, Left Face, Top Face, Bottom Face, Back Face, and Front Face in that order
+	public int getCubeMapID(String[] files){
+		//Get the ID of empty texture
+		int ID = GL11.glGenTextures();
+		//Bind for texture maniuplation
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		//Bind to ID
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, ID);
+		//Load all of the texture files
+		for(int k = 0; k < files.length; k++){
+			GameModelTextureData gameModelTextureData = loadToByteBuffer("res/" + files[k] + ".png");
+			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + k, 0, GL11.GL_RGBA, gameModelTextureData.getTEXTURE_WIDTH(), gameModelTextureData.getTEXTURE_HEIGHT(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, gameModelTextureData.getBYTE_BUFFER());
+		}
+		//Set the filters for the textures
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+		//Add the textures to the texture list
+		textureList.add(ID);
+		return ID;
+	}
 	//unbindVertexArrayObject unbinds the VAO
 	private void unbindVertexArrayObject(){
 		GL30.glBindVertexArray(0);
 	}
-	//Loads in GUI quads
-	public UntexturedModel loadIntoVertexArrayObject(float[] positions){
+	//Loads in GUI quads & skyboxes
+	public UntexturedModel loadIntoVertexArrayObject(float[] positions, int dimensions){
 		//Create a vertex array object
 		int vertexArrayObjectReferenceID = initializeVertexArrayObject();
 		//Give it an x,y coordinate based on positions
-		this.addDataToAttributeList(0, 2, positions);
+		this.addDataToAttributeList(0, dimensions, positions);
 		unbindVertexArrayObject();
 		//Return untextured model
-		return new UntexturedModel(vertexArrayObjectReferenceID, positions.length/2);
+		return new UntexturedModel(vertexArrayObjectReferenceID, positions.length/dimensions);
 	}
 }

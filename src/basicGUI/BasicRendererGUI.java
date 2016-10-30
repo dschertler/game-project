@@ -19,7 +19,7 @@ public class BasicRendererGUI {
 	
 	public BasicRendererGUI(ObjectLoader objectLoader){
 		float[] vectorPostions = {-1, 1, -1, -1, 1, 1, 1, -1};
-		guiField = objectLoader.loadIntoVertexArrayObject(vectorPostions);
+		guiField = objectLoader.loadIntoVertexArrayObject(vectorPostions, 2);
 		guiShader = new GuiShader();
 	}
 	public void removeLeftOverShaders(){

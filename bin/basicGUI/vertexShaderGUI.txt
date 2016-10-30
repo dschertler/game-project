@@ -1,0 +1,15 @@
+#version 400 core
+//This is the vertexShader, which takes a vertex placement, and assigns color values to it
+//Input placement
+in vec2 placementVector;
+//Output Texture Coords to fragment shader
+out vec2 pass_placementTexture;
+//The uniform matrix which handles vertex transformations
+uniform mat4 transformationMatrix;
+
+void main (void){
+	//Set the render position given its matrix transformation, view matrix, and projection matrix
+	gl_Position =transformationMatrix * vec4(placementVector, 0.0, 1.0);
+	//Calculate texture based on placement and coords
+	pass_placementTexture = vec2((placementVector.x + 1.0)/2.0, 1 - (placementVector.y + 1.0)/2.0);
+}

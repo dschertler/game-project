@@ -39,7 +39,7 @@ public class BasicGame {
 		//Creates the modelLoader for loading 3D models
 		ObjectLoader modelLoader = new ObjectLoader();
 		//Creates the primaryRenderer for rendering all objects
-		MasterRenderingClass primaryRenderer = new MasterRenderingClass();
+		MasterRenderingClass primaryRenderer = new MasterRenderingClass(modelLoader);
 		
 		//GUI Stuff
 		List<TextureGUI> listOfGUIs = new ArrayList<TextureGUI>();
@@ -83,7 +83,7 @@ public class BasicGame {
 //		gameView.setGameViewPosition(new Vector3f(0, 0, -50));
 		//Create a light source
 		List<GameLighting> gameLights = new ArrayList<GameLighting>();
-		GameLighting gameLight = new GameLighting(new Vector3f(100, 100, 10), new Vector3f(0.6f, 0.5f, 0.5f));
+		GameLighting gameLight = new GameLighting(new Vector3f(1000, 1000, -1000), new Vector3f(0.6f, 0.5f, 0.5f));
 		gameLights.add(gameLight);
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){

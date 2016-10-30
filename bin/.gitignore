@@ -1,5 +1,4 @@
-/basicGUI/
-/basicEnginePackage/
+/gameTexturesPackage/
 /gameEngineRenderingPackage/
-/basicGameEngineToolsPackage/
-/gameShadersPackage/
+/gameSkyboxesPackage/
+/basicEnginePackage/

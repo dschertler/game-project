@@ -17,6 +17,7 @@ public class GameTerrainShader extends AbstractShaderManager{
 	
 	private int location_lPosition[];
 	private int location_lColor[];
+	private int location_lAttenuation[];
 	private int location_shine;
 	private int location_cameraProximityToShine;
 	private int location_transformationMatrix;
@@ -50,7 +51,10 @@ public class GameTerrainShader extends AbstractShaderManager{
 		location_lPosition = new int[LIGHTS];
 		//Stores the information of the light color array
 		location_lColor = new int[LIGHTS];
+		//Stores the information of the light attenuation
+		location_lAttenuation = new int[LIGHTS];
 		for(int j = 0; j < LIGHTS; j++){
+			location_lAttenuation[j] = super.findSingleUniformVariable("lAttenuation[" + j +"]");
 			location_lPosition[j] = super.findSingleUniformVariable("lPosition[" + j + "]");
 			location_lColor[j] = super.findSingleUniformVariable("lColor[" + j + "]");
 		}
@@ -98,17 +102,19 @@ public class GameTerrainShader extends AbstractShaderManager{
 		super.loadVectorToUniformVariable(location_colorOfSky, new Vector3f(r,g,b));
 	}
 	//Load the information of the light vector to the uniform variable
-	public void loadLightVectors(List<GameLighting> gameLights){
-		for(int j = 0; j < LIGHTS; j++){
-			if(j < gameLights.size()){
-				super.loadVectorToUniformVariable(location_lPosition[j], gameLights.get(j).getLightPosition());
-				super.loadVectorToUniformVariable(location_lColor[j], gameLights.get(j).getLightColor());
-			}else{
-				super.loadVectorToUniformVariable(location_lPosition[j], new Vector3f(0, 0, 0));
-				super.loadVectorToUniformVariable(location_lColor[j], new Vector3f(0, 0, 0));
+		public void loadLightVectors(List<GameLighting> gameLights){
+			for(int j = 0; j < LIGHTS; j++){
+				if(j < gameLights.size()){
+					super.loadVectorToUniformVariable(location_lAttenuation[j], gameLights.get(j).getLightAttenuation());
+					super.loadVectorToUniformVariable(location_lPosition[j], gameLights.get(j).getLightPosition());
+					super.loadVectorToUniformVariable(location_lColor[j], gameLights.get(j).getLightColor());
+				}else{
+					super.loadVectorToUniformVariable(location_lAttenuation[j], new Vector3f(1, 0, 0));
+					super.loadVectorToUniformVariable(location_lPosition[j], new Vector3f(0, 0, 0));
+					super.loadVectorToUniformVariable(location_lColor[j], new Vector3f(0, 0, 0));
+				}
 			}
 		}
-	}
 	//Load the information of the transformation matrix to the uniform variable
 	public void loadTransformationMatrix(Matrix4f matrix){
 		super.loadMatrixToUniformVariable(location_transformationMatrix, matrix);

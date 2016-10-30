@@ -15,6 +15,7 @@ import gameEntitiesPackage.GameView;
 import gameModelPackage.TexturedModel;
 import gameShadersPackage.GameTerrainShader;
 import gameShadersPackage.StaticShader;
+import gameSkyboxesPackage.SkyboxRenderingClass;
 import gameTerrainPackage.GameTerrain;
 
 //This will handle all of the rendering in the game
@@ -24,7 +25,8 @@ public class MasterRenderingClass {
 		private EntityRenderingClass entityRenderer;
 		private static final float fieldOfView = 70;
 		private static final float nearPlane = 0.1f;
-		private static final float farPlane = 1000f;
+		private static final float farPlane = 10000f;
+		private SkyboxRenderingClass skyboxRenderer;
 		private Matrix4f projectionMatrix;
 		private TerrainRenderingClass terrainRenderer;
 		private GameTerrainShader terrainShader = new GameTerrainShader(null, null);
@@ -57,6 +59,7 @@ public class MasterRenderingClass {
 			terrainShader.loadViewMatrix(cam);
 			terrainRenderer.renderTerrains(gameTerrains);
 			terrainShader.endShading();
+			skyboxRenderer.renderSkybox(cam);
 			gameTerrains.clear();
 			//Remove all leftover entities
 			entitiesMap.clear();
@@ -74,7 +77,7 @@ public class MasterRenderingClass {
 		public void addTerrain(GameTerrain gameTerrain){
 			gameTerrains.add(gameTerrain);
 		}
-		public MasterRenderingClass(){
+		public MasterRenderingClass(ObjectLoader objectLoader){
 			//Don't render triangles which aren't facing the gameView
 			initiateBackFaceCulling();
 			//Create projection matrix
@@ -84,6 +87,7 @@ public class MasterRenderingClass {
 			
 			terrainRenderer = new TerrainRenderingClass(terrainShader, projectionMatrix);
 			
+			skyboxRenderer = new SkyboxRenderingClass(objectLoader, projectionMatrix);
 		}
 		//This function id to load up the projection matrix
 		//Create projection matrix creates a projection matrix which is used to make a percieved 3 dimensional space

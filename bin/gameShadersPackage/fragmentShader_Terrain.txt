@@ -20,6 +20,8 @@ uniform sampler2D greenTexture;
 uniform sampler2D blueTexture;
 uniform sampler2D blendMap;
 
+//This vector handles light attenuation
+uniform vec3 lAttenuation[5];
 //This vector handles the lighting color
 uniform vec3 lColor[5];
 //This is for storing data about the texture sampling
@@ -57,17 +59,21 @@ void main(void){
 	vec4 allColors = textureOfBackground + textureOfRed + textureOfBlue + textureOfGreen;
 	//Makes the size of the surface normal equal one
 	vec3 itemNorm = normalize(normalSurface);
+	
+	//Normalize the vector to one
+	vec3 vectorTowardsCameraNorm = normalize(vectorTowardsCamera);
 	for(int i = 0; i < 5; i++){
+	//Calculate distance
+	float distanceFromLightSource = length(lightSourceVector[i]);
+	//Calculate light attenuation
+	float attenuationValue = lAttenuation[i].x + (lAttenuation[i].y * distanceFromLightSource) + (lAttenuation[i].z * distanceFromLightSource * distanceFromLightSource);
+	//float attenuationValue = 0.00001 + (0.0001 * distanceFromLightSource) + (0.0001 * distanceFromLightSource * distanceFromLightSource);
 	//Makes the size of the light vector equal one
 	vec3 itemLightSourceVector = normalize(lightSourceVector[i]);
 	//Find the dot product
 	float nDot1 = dot(itemNorm, itemLightSourceVector);
 	//Calculate brightness
 	float brightness = max(nDot1, 0.0);
-	//Calculate diffuse
-	sumDiffuse += brightness * lColor[i];
-	//Normalize the vector to one
-	vec3 vectorTowardsCameraNorm = normalize(vectorTowardsCamera);
 	//Find the inverse of the light vector
 	vec3 directionOfLight = -itemLightSourceVector;
 	//Call the reflect function to determine shine
@@ -78,8 +84,10 @@ void main(void){
 	shineStrength = max(shineStrength, 0.0);
 	//Apply dampening to lighting
 	float shineDampening = pow(shineStrength, cameraProximityToShine);
+	//Calculate diffuse
+	sumDiffuse += (brightness * lColor[i])/attenuationValue;
 	//Ensure proper light color
-	sumShine += shineDampening * lColor[i];
+	sumShine += (shineDampening * shine * lColor[i])/attenuationValue;
 	}
 	//Handle Ambient
 	sumDiffuse = max(sumDiffuse, 0.1);
