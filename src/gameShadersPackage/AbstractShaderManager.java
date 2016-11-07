@@ -9,6 +9,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 //This is the AbstractShaderManager class which will provide basic support for all types of shader classes
@@ -64,6 +65,10 @@ public abstract class AbstractShaderManager {
 	protected void loadFloatToUniformVariable(int location, float value){
 		GL20.glUniform1f(location, value);
 	}
+	//Used for loading an int value into a uniform variable
+	protected void loadInteger(int placement, int val){
+		GL20.glUniform1i(placement, val);
+	}
 	//Used for loading a vector into a uniform variable
 	protected void loadVectorToUniformVariable(int location, Vector3f vector){
 		GL20.glUniform3f(location, vector.x, vector.y, vector.z);
@@ -75,6 +80,10 @@ public abstract class AbstractShaderManager {
 			toLoad = 1;
 		}
 		GL20.glUniform1f(location, toLoad);
+	}
+	//Load up a 2d vector
+	protected void loadVector2D(int location, Vector2f vector){
+		GL20.glUniform2f(location, vector.x, vector.y);
 	}
 	//Used to load a matrix to a uniform variable
 	protected void loadMatrixToUniformVariable(int location, Matrix4f matrix){
@@ -134,4 +143,5 @@ public abstract class AbstractShaderManager {
 		//Delete the shader program
 		GL20.glDeleteProgram(programReferenceID);
 	}
+
 }

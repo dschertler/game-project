@@ -1,0 +1,98 @@
+#version 400 core
+//This is the fragment shader which takes the color values of several vertexes and blends accordingly
+//Input texture coordinates
+in vec2 pass_placementTexture;
+//Input the normal vector
+in vec3 normalSurface;
+//Input the light source vector
+in vec3 lightSourceVector[5];
+//Input the vector pointing towards the game view
+in vec3 vectorTowardsCamera;
+//Input the fogVisibility
+in float fogVisibility;
+//Output Colored Pixels
+out vec4 out_Color;
+
+//Uniform variables for multi texturing
+uniform sampler2D backgroundTexture;
+uniform sampler2D redTexture;
+uniform sampler2D greenTexture;
+uniform sampler2D blueTexture;
+uniform sampler2D blendMap;
+
+//This vector handles light attenuation
+uniform vec3 lAttenuation[5];
+//This vector handles the lighting color
+uniform vec3 lColor[5];
+//This is for storing data about the texture sampling
+uniform sampler2D textureSampler;
+//This is for storing the camera proximity to shine vector
+uniform float cameraProximityToShine;
+//This is for storing the amount of shine on an object
+uniform float shine;
+//This is for storing the sky color
+uniform vec3 colorOfSky;
+
+void main(void){
+
+	//All light diffuse
+	vec3 sumDiffuse = vec3(0.0);
+	//All light shine
+	vec3 sumShine = vec3(0.0);
+
+	//Get the blended color
+	vec4 blendedColor = texture(blendMap, pass_placementTexture);
+	//The strength of the background color
+	float backgroundTextureStrength = 1 - (blendedColor.r + blendedColor.g + blendedColor.b);
+	//Calculate the location of the tile 
+	vec2 tilePlacement = pass_placementTexture * 40.0;
+	//Calculate background tiles
+	vec4 textureOfBackground = texture(backgroundTexture, tilePlacement) * backgroundTextureStrength;
+	//Calculate the red texture
+	vec4 textureOfRed = texture(redTexture, tilePlacement) * blendedColor.r;
+	//Calculate the green texture
+	vec4 textureOfGreen = texture(greenTexture, tilePlacement) * blendedColor.g;
+	//Calculate the blue texture
+	vec4 textureOfBlue = texture(blueTexture, tilePlacement) * blendedColor.b;
+	
+	//Calculate all colors
+	vec4 allColors = textureOfBackground + textureOfRed + textureOfBlue + textureOfGreen;
+	//Makes the size of the surface normal equal one
+	vec3 itemNorm = normalize(normalSurface);
+	
+	//Normalize the vector to one
+	vec3 vectorTowardsCameraNorm = normalize(vectorTowardsCamera);
+	for(int i = 0; i < 5; i++){
+	//Calculate distance
+	float distanceFromLightSource = length(lightSourceVector[i]);
+	//Calculate light attenuation
+	float attenuationValue = lAttenuation[i].x + (lAttenuation[i].y * distanceFromLightSource) + (lAttenuation[i].z * distanceFromLightSource * distanceFromLightSource);
+	//float attenuationValue = 0.00001 + (0.0001 * distanceFromLightSource) + (0.0001 * distanceFromLightSource * distanceFromLightSource);
+	//Makes the size of the light vector equal one
+	vec3 itemLightSourceVector = normalize(lightSourceVector[i]);
+	//Find the dot product
+	float nDot1 = dot(itemNorm, itemLightSourceVector);
+	//Calculate brightness
+	float brightness = max(nDot1, 0.0);
+	//Find the inverse of the light vector
+	vec3 directionOfLight = -itemLightSourceVector;
+	//Call the reflect function to determine shine
+	vec3 shineyLightVector = reflect(directionOfLight, itemNorm);
+	//Find the strength of the shine
+	float shineStrength = dot(shineyLightVector, vectorTowardsCameraNorm); 
+	//Ensure positive brightness adjust second value for ambient light
+	shineStrength = max(shineStrength, 0.0);
+	//Apply dampening to lighting
+	float shineDampening = pow(shineStrength, cameraProximityToShine);
+	//Calculate diffuse
+	sumDiffuse += (brightness * lColor[i])/attenuationValue;
+	//Ensure proper light color
+	sumShine += (shineDampening * shine * lColor[i])/attenuationValue;
+	}
+	//Handle Ambient
+	sumDiffuse = max(sumDiffuse, 0.1);
+	//Output the texture mapped to the proper coordinates and proper lighting
+	out_Color = vec4(sumDiffuse, 1.0) * allColors + vec4(sumShine, 1.0);
+	//Output the visibility of the object
+	out_Color = mix(vec4(colorOfSky,1.0), out_Color, fogVisibility);
+}
