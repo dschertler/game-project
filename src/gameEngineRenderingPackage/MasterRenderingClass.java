@@ -59,7 +59,7 @@ public class MasterRenderingClass {
 			terrainShader.loadViewMatrix(cam);
 			terrainRenderer.renderTerrains(gameTerrains);
 			terrainShader.endShading();
-			skyboxRenderer.renderSkybox(cam);
+			skyboxRenderer.renderSkybox(cam, R, G, B);
 			gameTerrains.clear();
 			//Remove all leftover entities
 			entitiesMap.clear();
@@ -138,4 +138,11 @@ public class MasterRenderingClass {
 				entitiesMap.put(entityModel, newBatchList);
 			}
 		}
+		public Matrix4f getProjectionMatrix() {
+			return projectionMatrix;
+		}
+		public void setProjectionMatrix(Matrix4f projectionMatrix) {
+			this.projectionMatrix = projectionMatrix;
+		}
+		
 }

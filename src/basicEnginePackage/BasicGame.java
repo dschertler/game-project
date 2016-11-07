@@ -1,6 +1,7 @@
 package basicEnginePackage;
 
 import java.awt.event.KeyEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import gameTerrainPackage.GameTerrainTexture;
 import gameTerrainPackage.GameTerrainTexture_Collection;
 import gameTexturesPackage.GameModelTexture;
 import gameModelPackage.TexturedModel;
+import basicGameEngineToolsPackage.MouseController;
 //This is the BasicGame class, which handles running the actual game
 public class BasicGame {
 
@@ -80,6 +82,8 @@ public class BasicGame {
 		GameView gameView = new GameView(user);
 		gameView.setGameViewPosition(new Vector3f(user.getGameEntityPosition().x, user.getGameEntityPosition().y+10, user.getGameEntityPosition().z-20));
 		gameView.setGameViewYaw(0);
+		//Creates the Mouse Controller
+		MouseController mouseController = new MouseController(gameView, primaryRenderer.getProjectionMatrix(), terrain);
 //		gameView.setGameViewPosition(new Vector3f(0, 0, -50));
 		//Create a light source
 		List<GameLighting> gameLights = new ArrayList<GameLighting>();
@@ -88,6 +92,11 @@ public class BasicGame {
 		//Keep updating display until user closes application
 		while(!Display.isCloseRequested()){
 			user.moveUser(terrain);
+			mouseController.update();
+			Vector3f pointOnTerrain = mouseController.getPointOnTerrain();
+			if(pointOnTerrain != null){
+				entityList[2].setGameEntityPosition(pointOnTerrain);
+			}
 			while (Keyboard.next()) {
 			    if (Keyboard.getEventKeyState()) {
 			        switch (Keyboard.getEventKey()) {

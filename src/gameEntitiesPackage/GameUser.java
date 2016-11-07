@@ -68,7 +68,6 @@ public class GameUser extends GameEntity{
 	//A Turn Left
 	private void registerInputs(){
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-			System.out.println("Trying to move forward");
 			this.presentMovementSpeed = movementSpeed;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
 			this.presentMovementSpeed = -movementSpeed;
@@ -77,7 +76,6 @@ public class GameUser extends GameEntity{
 		}
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-			System.out.println("Trying to rotate left");
 			this.presentRotateSpeed = rotateSpeed;
 		}else if(Keyboard.isKeyDown(Keyboard.KEY_D)){
 			this.presentRotateSpeed = -rotateSpeed;
