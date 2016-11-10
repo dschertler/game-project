@@ -87,5 +87,4 @@ public class GameUser extends GameEntity{
 			jumpUser();
 		}
 	}
-	
 }
