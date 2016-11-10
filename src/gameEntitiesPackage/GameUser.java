@@ -66,6 +66,7 @@ public class GameUser extends GameEntity{
 	//S Move Backwards
 	//D Turn Right
 	//A Turn Left
+	//Space to jump
 	private void registerInputs(){
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)){
 			this.presentMovementSpeed = movementSpeed;

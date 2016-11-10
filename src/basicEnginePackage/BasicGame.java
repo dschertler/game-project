@@ -33,6 +33,14 @@ import gameTexturesPackage.GameModelTexture;
 import gameModelPackage.TexturedModel;
 import basicGameEngineToolsPackage.MouseController;
 //This is the BasicGame class, which handles running the actual game
+
+//If you're evaluating, please be aware that this class is basically just for running everything else,And making sure it works.
+//Thus, sloppier code has been used here, as all anything is really doing is calling functions.
+//I plan on coming back to this class in the future to modify the code to avoid hardcoding.
+
+//On a side note, this class can be used to make anything provided it is supported through the functions.
+//So, one could easily modify textures, objects, terrain, lighting variables, ect. From this section.
+//However, if one wanted to modify specifics of the engine (like, movement speed, ect) one would have to modify the actual class
 public class BasicGame {
 
 	public static void main(String[] args) {
@@ -94,6 +102,7 @@ public class BasicGame {
 			user.moveUser(terrain);
 			mouseController.update();
 			Vector3f pointOnTerrain = mouseController.getPointOnTerrain();
+			//This is just for now to make sure that the object movement is working by mouse control
 			if(pointOnTerrain != null){
 				entityList[2].setGameEntityPosition(pointOnTerrain);
 			}
