@@ -13,8 +13,8 @@ import gameEntitiesPackage.GameView;
 import gameShadersPackage.AbstractShaderManager;
 
 public class GameSkyboxShader extends AbstractShaderManager{
-	private static final String VERTEX_FILE = "src/gameSkyboxesPackage/skyboxVertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/gameSkyboxesPackage/skyboxFragmentShader.txt";
+	private static final String VERTEX_FILE = "/gameSkyboxesPackage/skyboxVertexShader.txt";
+	private static final String FRAGMENT_FILE = "/gameSkyboxesPackage/skyboxFragmentShader.txt";
 	
 	private int location_projectionMatrix;
 	private int location_viewMatrix;

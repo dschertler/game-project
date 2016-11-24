@@ -10,8 +10,8 @@ import gameEntitiesPackage.GameView;
 import gameShadersPackage.AbstractShaderManager;
 
 public class GuiShader extends AbstractShaderManager{
-	private static final String VERTEX_FILE = "src/basicGUI/vertexShaderGUI.txt";
-	private static final String FRAGMENT_FILE = "src/basicGUI/fragmentShaderGUI.txt";
+	private static final String VERTEX_FILE = "/basicGUI/vertexShaderGUI.txt";
+	private static final String FRAGMENT_FILE = "/basicGUI/fragmentShaderGUI.txt";
 	
 	private int location_transformationMatrix;
 	
