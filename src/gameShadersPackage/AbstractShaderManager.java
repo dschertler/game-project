@@ -3,6 +3,8 @@ package gameShadersPackage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -97,8 +99,10 @@ public abstract class AbstractShaderManager {
 		StringBuilder shaderSource = new StringBuilder();
 		//Try to read from the input file, and catch any errors
 		try{
+			//Register file as an input stream
+			InputStream inputStream = Class.class.getResourceAsStream(file);
 			//Read from the input file
-			BufferedReader reader = new BufferedReader(new FileReader(file));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 			String line;
 			//Read everything from file into shaderSource
 			while((line = reader.readLine()) != null){

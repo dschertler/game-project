@@ -10,8 +10,8 @@ import gameEntitiesPackage.GameLighting;
 import gameEntitiesPackage.GameView;
 
 public class GameTerrainShader extends AbstractShaderManager{
-	private static final String VERTEX_FILE = "src/gameShadersPackage/vertexShader_Terrain.txt";
-	private static final String FRAGMENT_FILE = "src/gameShadersPackage/fragmentShader_Terrain.txt";
+	private static final String VERTEX_FILE = "/gameShadersPackage/vertexShader_Terrain.txt";
+	private static final String FRAGMENT_FILE = "/gameShadersPackage/fragmentShader_Terrain.txt";
 	
 	private static final int LIGHTS = 5;
 	

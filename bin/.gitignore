@@ -1,6 +1,11 @@
-/gameTexturesPackage/
-/gameEngineRenderingPackage/
-/gameSkyboxesPackage/
 /basicEnginePackage/
+/gameEngineRenderingPackage/
+/res/
+/gameStuff/
+/basicGUI/
+/gameModelPackage/
+/gameSkyboxesPackage/
+/gameTerrainPackage/
+/gameTexturesPackage/
 /basicGameEngineToolsPackage/
 /gameEntitiesPackage/

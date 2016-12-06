@@ -1,0 +1,14 @@
+#version 400
+
+in vec3 placementVector;
+out vec3 pass_placementTexture;
+
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+
+void main(void){
+	
+	gl_Position = projectionMatrix * viewMatrix * vec4(placementVector, 1.0); 
+	pass_placementTexture = placementVector;
+	
+}

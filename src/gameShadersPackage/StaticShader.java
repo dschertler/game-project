@@ -14,8 +14,8 @@ import gameEntitiesPackage.GameView;
 //Static shader class is used for handling static models
 public class StaticShader extends AbstractShaderManager{
 	
-	private static final String VERTEX_FILE = "src/gameShadersPackage/vertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/gameShadersPackage/fragmentShader.txt";
+	private static final String VERTEX_FILE = "/gameShadersPackage/vertexShader.txt";
+	private static final String FRAGMENT_FILE = "/gameShadersPackage/fragmentShader.txt";
 	
 	private static final int LIGHTS = 5;
 	

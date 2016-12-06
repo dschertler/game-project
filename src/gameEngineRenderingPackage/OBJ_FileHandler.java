@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class OBJ_FileHandler {
 			e.printStackTrace();
 		}
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		/*InputStreamReader inputStream = new InputStreamReader(Class.class.getResourceAsStream("/res/" + fileName + ".obj"));
+		BufferedReader bufferedReader = new BufferedReader(inputStream);*/
 		//For reading each line of the file
 		String line;
 		//Several lists corresponding to all the vector coordinates, texture coordinates, normal vector coordinates, and indicy order
